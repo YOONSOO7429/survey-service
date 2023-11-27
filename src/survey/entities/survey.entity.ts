@@ -15,7 +15,7 @@ export class Survey {
   @Column({ type: 'varchar' })
   surveyTitle: string;
 
-  @Column({ type: 'mediumtext' })
+  @Column({ type: 'text' })
   surveyContent: string;
 
   @CreateDateColumn({ type: 'timestamp' })
