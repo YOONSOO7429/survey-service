@@ -12,6 +12,9 @@ export class Survey {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
   surveyId: number;
 
+  @Column({ type: 'varchar' })
+  surveyTitle: string;
+
   @Column({ type: 'mediumtext' })
   surveyContent: string;
 
