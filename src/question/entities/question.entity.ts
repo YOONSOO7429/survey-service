@@ -1,3 +1,4 @@
+import { Option } from 'src/option/entities/option.entity';
 import { Survey } from 'src/survey/entities/survey.entity';
 import {
   Column,
@@ -6,6 +7,7 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -33,4 +35,7 @@ export class Question {
 
   @DeleteDateColumn({ nullable: true })
   questionDeletedAt: Date;
+
+  @OneToMany(() => Option, (option) => option.questionId)
+  option: Option[];
 }

@@ -1,13 +1,13 @@
 import { IsOptional, IsString } from 'class-validator';
 
 export class EditQuestionDto {
-  // questionNumber
+  // optionNumber
   @IsString()
   @IsOptional()
-  questionNumber: number;
+  optionNumber: number;
 
-  // questionContent
+  // optionContent
   @IsString()
   @IsOptional()
-  questionContent: string;
+  optionContent: string;
 }
