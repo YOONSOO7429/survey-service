@@ -1,6 +1,6 @@
 import { IsOptional, IsString } from 'class-validator';
 
-export class EditQuestionDto {
+export class EditOptionDto {
   // optionNumber
   @IsString()
   @IsOptional()
