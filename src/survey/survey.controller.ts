@@ -41,8 +41,24 @@ export class SurveyController {
     @Res() res: any,
   ): Promise<any> {
     try {
+      // 설문지 조회
+      const survey = await this.surveyService.findOneSurvey(surveyId);
+      if (!survey) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .json({ message: '설문지가 존재하지 않습니다.' });
+      }
+
       // 설문지 수정
-      await this.surveyService.editSurvey(editSurveyDto, surveyId);
+      const editSurvey = await this.surveyService.editSurvey(
+        editSurveyDto,
+        surveyId,
+      );
+      if (editSurvey.affected === 0) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json({ message: '내부 서버 에러' });
+      }
       return res.status(HttpStatus.OK).json({ message: '설문지 수정 완료' });
     } catch (e) {
       console.error(e);
@@ -57,8 +73,22 @@ export class SurveyController {
     @Res() res: any,
   ): Promise<any> {
     try {
+      // 설문지 조회
+      const survey = await this.surveyService.findOneSurvey(surveyId);
+      if (!survey) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .json({ message: '설문지가 존재하지 않습니다.' });
+      }
+
       // 설문지 삭제
-      await this.surveyService.deleteSurvey(surveyId);
+      const deleteSurvey = await this.surveyService.deleteSurvey(surveyId);
+      if (deleteSurvey.affected === 0) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json({ message: '내부 서버 에러' });
+      }
+
       return res.status(HttpStatus.OK).json({ message: '설문지 삭제 완료' });
     } catch (e) {
       console.error(e);

@@ -71,7 +71,15 @@ export class QuestionController {
       }
 
       // 문항 수정
-      await this.questionService.createQuestion(editQuestionDto, questionId);
+      const editQuestion = await this.questionService.createQuestion(
+        editQuestionDto,
+        questionId,
+      );
+      if (editQuestion.affected === 0) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json({ message: '내부 서버 에러' });
+      }
       return res.status(HttpStatus.OK).json({ message: '문항 수정 완료' });
     } catch (e) {
       console.error(e);
@@ -104,7 +112,13 @@ export class QuestionController {
       }
 
       // 문항 삭제
-      await this.questionService.deleteQuestion(questionId);
+      const deleteQuestion =
+        await this.questionService.deleteQuestion(questionId);
+      if (deleteQuestion.affected === 0) {
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json({ message: '내부 서버 에러' });
+      }
       return res.status(HttpStatus.OK).json({ message: '문항 삭제 완료' });
     } catch (e) {
       console.error(e);
