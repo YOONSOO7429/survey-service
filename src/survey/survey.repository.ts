@@ -14,9 +14,10 @@ export class SurveyRepository {
   /* 설문지 생성 */
   async createSurvey(createSurveyDto: CreateSurveyDto): Promise<any> {
     try {
+      const { surveyContent, surveyTitle } = createSurveyDto;
       const survey = new Survey();
-      survey.surveyTitle = createSurveyDto.surveyTitle;
-      survey.surveyContent = createSurveyDto.surveyContent;
+      survey.surveyTitle = surveyTitle;
+      survey.surveyContent = surveyContent;
       await this.surveyRepository.save(survey);
       return survey;
     } catch (e) {
@@ -32,11 +33,11 @@ export class SurveyRepository {
   ): Promise<any> {
     try {
       const { surveyTitle, surveyContent } = editSurveyDto;
-      const survey = await this.surveyRepository.update(
+      const editSurvey = await this.surveyRepository.update(
         { surveyId },
         { surveyTitle, surveyContent },
       );
-      return survey;
+      return editSurvey;
     } catch (e) {
       console.error(e);
       throw new Error('SurveyRepository/editSurvey');
@@ -53,11 +54,11 @@ export class SurveyRepository {
         currentDate.getTime() + koreaTimezoneOffset * 60000,
       );
       // 설문지 삭제
-      const survey = await this.surveyRepository.update(
+      const deleteSurvey = await this.surveyRepository.update(
         { surveyId },
         { surveyUpdatedAt: today },
       );
-      return survey;
+      return deleteSurvey;
     } catch (e) {
       console.error(e);
       throw new Error('SurveyRepository/deleteSurvey');

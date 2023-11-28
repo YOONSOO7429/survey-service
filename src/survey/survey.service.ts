@@ -24,11 +24,11 @@ export class SurveyService {
     surveyId: number,
   ): Promise<any> {
     try {
-      const survey = await this.surveyRepository.editSurvey(
+      const editSurvey = await this.surveyRepository.editSurvey(
         editSurveyDto,
         surveyId,
       );
-      return survey;
+      return editSurvey;
     } catch (e) {
       console.error(e);
       throw new Error('SurveyService/editSurvey');
@@ -38,8 +38,8 @@ export class SurveyService {
   /* 설문지 삭제(softDelete) */
   async deleteSurvey(surveyId: number): Promise<any> {
     try {
-      const survey = await this.surveyRepository.deleteSurvey(surveyId);
-      return survey;
+      const deleteSurvey = await this.surveyRepository.deleteSurvey(surveyId);
+      return deleteSurvey;
     } catch (e) {
       console.error(e);
       throw new Error('SurveyService/deleteSurvey');

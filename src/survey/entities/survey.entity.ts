@@ -1,8 +1,10 @@
+import { Question } from 'src/question/entities/question.entity';
 import {
   Column,
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -26,4 +28,7 @@ export class Survey {
 
   @DeleteDateColumn({ nullable: true })
   suveyDeletedAt: Date;
+
+  @OneToMany(() => Question, (question) => question.surveyId)
+  question: Question[];
 }

@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { SurveyModule } from './survey/survey.module';
+import { QuestionModule } from './question/question.module';
 
 @Module({
   imports: [
@@ -15,7 +16,7 @@ import { SurveyModule } from './survey/survey.module';
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
+      port: +Number(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
       password: process.env.DB_PASSWORD,
       database: process.env.DB_DATABASE,
@@ -23,6 +24,7 @@ import { SurveyModule } from './survey/survey.module';
       synchronize: true,
     }),
     SurveyModule,
+    QuestionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
