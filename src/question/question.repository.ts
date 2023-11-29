@@ -18,10 +18,12 @@ export class QuestionRepository {
     surveyId: number,
   ): Promise<any> {
     try {
-      const { questionNumber, questionContent } = createQuestionDto;
+      const { questionNumber, questionContent, duplicateAnswer } =
+        createQuestionDto;
       const question = new Question();
       question.questionNumber = questionNumber;
       question.questionContent = questionContent;
+      question.duplicateAnswer = duplicateAnswer;
       question.surveyId = surveyId;
       await this.questionRepository.save(question);
       return question;
@@ -37,7 +39,15 @@ export class QuestionRepository {
     questionId: number,
   ): Promise<any> {
     try {
-      const { questionNumber, questionContent } = editQuestionDto;
+      const { questionNumber, questionContent, duplicateAnswer } =
+        editQuestionDto;
+      if (duplicateAnswer) {
+        const editQuestion = await this.questionRepository.update(
+          { questionId },
+          { questionNumber, questionContent, duplicateAnswer },
+        );
+        return editQuestion;
+      }
       const editQuestion = await this.questionRepository.update(
         { questionId },
         { questionNumber, questionContent },
@@ -52,16 +62,9 @@ export class QuestionRepository {
   /* 문항 삭제(softDelete) */
   async deleteQuestion(questionId: number): Promise<any> {
     try {
-      // 한국 시간
-      const koreaTimezoneOffset = 9 * 60;
-      const currentDate = new Date();
-      const today = new Date(
-        currentDate.getTime() + koreaTimezoneOffset * 60000,
-      );
-      const deleteQuestion = await this.questionRepository.update(
-        { questionId },
-        { questionDeletedAt: today },
-      );
+      const deleteQuestion = await this.questionRepository.delete({
+        questionId,
+      });
       return deleteQuestion;
     } catch (e) {
       console.error(e);
@@ -79,6 +82,34 @@ export class QuestionRepository {
     } catch (e) {
       console.error(e);
       throw new Error('QuestionRepository/findOneQuestion');
+    }
+  }
+
+  /* 설문지에 맞는 문항 조회 */
+  async findAllQuestionWithOptions(surveyId: number): Promise<any> {
+    try {
+      const question = await this.questionRepository
+        .createQueryBuilder('question')
+        .leftJoin('option', 'option', 'option.questionId = question.questionId')
+        .select([
+          'question.surveyId AS surveyId',
+          'question.questionId AS questionId',
+          'question.questionNumber AS questionNumber',
+          'question.questionContent AS questionContent',
+          'question.duplicateAnswer AS duplicateAnswer',
+          `JSON_ARRAYAGG(
+            JSON_OBJECT(
+              'optionId', option.optionId, 
+              'optionNumber', option.optionNumber, 
+              'optionContent', option.optionContent,)
+              )AS option`,
+        ])
+        .where('surveyId = :surveyId', { surveyId })
+        .getRawMany();
+      return question;
+    } catch (e) {
+      console.error(e);
+      throw new Error('QuestionService/findAllQuestionWithOptions');
     }
   }
 }

@@ -64,4 +64,16 @@ export class QuestionService {
       throw new Error('QuestionService/findOneQuestion');
     }
   }
+
+  /* 설문지에 맞는 문항 조회 */
+  async findAllQuestionWithOptions(surveyId: number): Promise<any> {
+    try {
+      const question =
+        await this.questionRepository.findAllQuestionWithOptions(surveyId);
+      return question;
+    } catch (e) {
+      console.error(e);
+      throw new Error('QuestionService/findAllQuestionWithOptions');
+    }
+  }
 }

@@ -1,3 +1,4 @@
+import { Answer } from 'src/answer/entities/answer.entity';
 import { Option } from 'src/option/entities/option.entity';
 import { Survey } from 'src/survey/entities/survey.entity';
 import {
@@ -27,15 +28,18 @@ export class Question {
   @Column({ type: 'varchar' })
   questionContent: string;
 
+  @Column({ type: 'boolean', default: false })
+  duplicateAnswer: Boolean;
+
   @CreateDateColumn({ type: 'timestamp' })
   questionCreatedAt: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
   questionUpdatedAt: Date;
 
-  @DeleteDateColumn({ nullable: true })
-  questionDeletedAt: Date;
-
   @OneToMany(() => Option, (option) => option.questionId)
   option: Option[];
+
+  @OneToMany(() => Answer, (answer) => answer.questionId)
+  answer: Answer[];
 }

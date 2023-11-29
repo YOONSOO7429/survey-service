@@ -1,9 +1,20 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { AnswerController } from './answer.controller';
 import { AnswerService } from './answer.service';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { Answer } from './entities/answer.entity';
+import { AnswerRepository } from './answer.repository';
+import { SurveyModule } from 'src/survey/survey.module';
+import { QuestionModule } from 'src/question/question.module';
 
 @Module({
+  imports: [
+    TypeOrmModule.forFeature([Answer]),
+    forwardRef(() => SurveyModule),
+    forwardRef(() => QuestionModule),
+  ],
   controllers: [AnswerController],
-  providers: [AnswerService]
+  providers: [AnswerService, AnswerRepository],
+  exports: [AnswerService, AnswerRepository],
 })
 export class AnswerModule {}

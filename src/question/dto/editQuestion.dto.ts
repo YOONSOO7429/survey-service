@@ -1,4 +1,4 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsOptional, IsString } from 'class-validator';
 
 export class EditQuestionDto {
   // questionNumber
@@ -10,4 +10,9 @@ export class EditQuestionDto {
   @IsString()
   @IsOptional()
   questionContent: string;
+
+  // duplicateAnswer
+  @IsBoolean()
+  @IsOptional()
+  duplicateAnswer: boolean;
 }

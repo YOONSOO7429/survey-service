@@ -12,10 +12,16 @@ import {
 import { SurveyService } from './survey.service';
 import { CreateSurveyDto } from './dto/createSurvey.dto';
 import { EditSurveyDto } from './dto/editSurvey.dto';
+import { QuestionService } from 'src/question/question.service';
+import { OptionService } from 'src/option/option.service';
 
 @Controller('survey')
 export class SurveyController {
-  constructor(private readonly surveyService: SurveyService) {}
+  constructor(
+    private readonly surveyService: SurveyService,
+    private readonly questionService: QuestionService,
+    private readonly optionService: OptionService,
+  ) {}
 
   /* 설문지 생성 */
   @Post('createSurvey')
@@ -105,7 +111,17 @@ export class SurveyController {
     try {
       // 설문지 조회
       const survey = await this.surveyService.findOneSurvey(surveyId);
-      return res.status(HttpStatus.OK).json({ survey });
+      if (!survey) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .json({ message: '존재하지 않는 설문지입니다.' });
+      }
+
+      // 문항 조회
+      const question =
+        await this.questionService.findAllQuestionWithOptions(surveyId);
+
+      return res.status(HttpStatus.OK).json({ survey, question });
     } catch (e) {
       console.error(e);
       throw new Error('SurveyController/getSurveyDetail');

@@ -1,4 +1,10 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import {
+  IsBoolean,
+  IsNotEmpty,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateQuestionDto {
   // questionNumber
@@ -10,4 +16,9 @@ export class CreateQuestionDto {
   @IsString()
   @IsNotEmpty()
   questionContent: string;
+
+  // duplicateAnswer
+  @IsBoolean()
+  @IsOptional()
+  duplicateAnswer: boolean;
 }

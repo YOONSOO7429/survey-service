@@ -51,16 +51,7 @@ export class OptionRepository {
   /* 선택지 삭제 */
   async deleteOption(optionId: number): Promise<any> {
     try {
-      // 한국 시간
-      const koreaTimezoneOffset = 9 * 60;
-      const currentDate = new Date();
-      const today = new Date(
-        currentDate.getTime() + koreaTimezoneOffset * 60000,
-      );
-      const deleteOption = await this.optionRepository.update(
-        { optionId },
-        { optionDeletedAt: today },
-      );
+      const deleteOption = await this.optionRepository.delete({ optionId });
       return deleteOption;
     } catch (e) {
       console.error(e);

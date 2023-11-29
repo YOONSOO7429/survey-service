@@ -1,3 +1,4 @@
+import { Answer } from 'src/answer/entities/answer.entity';
 import { Question } from 'src/question/entities/question.entity';
 import {
   Column,
@@ -31,4 +32,7 @@ export class Survey {
 
   @OneToMany(() => Question, (question) => question.surveyId)
   question: Question[];
+
+  @OneToMany(() => Answer, (answer) => answer.surveyId)
+  answer: Answer[];
 }
