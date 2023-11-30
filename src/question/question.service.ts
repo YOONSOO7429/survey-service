@@ -65,6 +65,16 @@ export class QuestionService {
     }
   }
 
+  /* 문항 수 체크를 위한 조회 */
+  async findAllQuestion(surveyId: number): Promise<any> {
+    try {
+      const question = await this.questionRepository.findAllQuestion(surveyId);
+    } catch (e) {
+      console.error(e);
+      throw new Error('QuestionService/findAllQuestion');
+    }
+  }
+
   /* 설문지에 맞는 문항 조회 */
   async findAllQuestionWithOptions(surveyId: number): Promise<any> {
     try {

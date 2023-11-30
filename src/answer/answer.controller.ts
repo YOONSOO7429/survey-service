@@ -30,7 +30,6 @@ export class AnswerController {
   ): Promise<any> {
     try {
       const surveyId = createAnswerDto.surveyId;
-      const questionId = createAnswerDto.questionId;
       // 설문지 조회
       const survey = await this.surveyService.findOneSurvey(surveyId);
       if (!survey) {
@@ -40,21 +39,17 @@ export class AnswerController {
       }
 
       // 문항 조회
-      const question = await this.questionService.findOneQuestion(questionId);
-      if (question.duplicateAnswer === false) {
-        const answer =
-          await this.answerService.findAnswerByDuplicate(questionId);
-        if (answer) {
-          return res
-            .status(HttpStatus.BAD_REQUEST)
-            .json({ message: '이미 답변한 문항입니다.' });
-        } else {
-          await this.answerService.createAnswer(createAnswerDto);
-          return res.status(HttpStatus.OK).json({ message: '답변 성공' });
-        }
+      const question = await this.questionService.findAllQuestion(surveyId);
+
+      // 답변 확인
+      const answerContent = createAnswerDto.answerContent;
+      if (answerContent.length !== question.length) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: '답변을 모두 작성해주세요' });
       } else {
         await this.answerService.createAnswer(createAnswerDto);
-        return res.status(HttpStatus.OK).json({ message: '답변 성공' });
+        return res.status(HttpStatus.OK).json({ message: '답변 완료' });
       }
     } catch (e) {
       console.error(e);
@@ -70,21 +65,17 @@ export class AnswerController {
     @Res() res: any,
   ): Promise<any> {
     try {
-      const questionId = editAnswerDto.questionId;
-
+      const surveyId = editAnswerDto.surveyId;
+      const answerContent = editAnswerDto.answerContent;
       // 문항 조회
-      const question = await this.questionService.findOneQuestion(questionId);
-      if (question.duplicateAnswer === false) {
-        const answer =
-          await this.answerService.findAnswerByDuplicate(questionId);
-        if (answer.length < 1) {
-          return res
-            .status(HttpStatus.BAD_REQUEST)
-            .json({ message: '이미 답변한 문항입니다.' });
-        } else {
-          await this.answerService.editAnswer(editAnswerDto, answerId);
-          return res.status(HttpStatus.OK).json({ message: ' 답변 수정 성공' });
-        }
+      const question = await this.questionService.findAllQuestion(surveyId);
+      if (answerContent.length !== question.length) {
+        return res
+          .status(HttpStatus.BAD_REQUEST)
+          .json({ message: '답변을 모두 작성해주세요' });
+      } else {
+        await this.answerService.editAnswer(editAnswerDto, answerId);
+        return res.status(HttpStatus.OK).json({ message: '답변 수정 완료' });
       }
     } catch (e) {
       console.error(e);
@@ -93,8 +84,25 @@ export class AnswerController {
   }
 
   /* 답변 삭제 */
-  // @Delete(':answerId/deleteAnswer')
-  // async deleteAnswer(@Res() res: any): Promise<any> {
-  //   const questionId =
-  // }
+  @Delete(':answerId/deleteAnswer')
+  async deleteAnswer(
+    @Param('answerId') answerId: number,
+    @Res() res: any,
+  ): Promise<any> {
+    try {
+      // 답변 조회
+      const answer = await this.answerService.findOneAnswer(answerId);
+      if (!answer) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .json({ message: '존재하지 않는 답변입니다.' });
+      } else {
+        await this.answerService.deleteAnswer(answerId);
+        return res.status(HttpStatus.OK).json({ message: '답변 삭제 완료' });
+      }
+    } catch (e) {
+      console.error(e);
+      throw new Error('AnswerController/deleteAnswer');
+    }
+  }
 }

@@ -14,11 +14,11 @@ export class AnswerRepository {
   /* 답변 생성 */
   async createAnswer(createAnswerDto: CreateAnswerDto): Promise<any> {
     try {
-      const { surveyId, questionId, answerNumber } = createAnswerDto;
+      const { surveyId, answerContent } = createAnswerDto;
       const answer = new Answer();
       answer.surveyId = surveyId;
-      answer.questionId = questionId;
-      answer.answerNumber = answerNumber;
+      answer.answerContent = answerContent;
+      answer.answerDone = true;
       await this.answerRepository.save(answer);
       return answer;
     } catch (e) {
@@ -33,10 +33,10 @@ export class AnswerRepository {
     answerId: number,
   ): Promise<any> {
     try {
-      const { surveyId, questionId, answerNumber } = editAnswerDto;
+      const { answerContent } = editAnswerDto;
       const editAnswer = await this.answerRepository.update(
         { answerId },
-        { surveyId, questionId, answerNumber },
+        { answerContent },
       );
       return editAnswer;
     } catch (e) {
@@ -56,16 +56,16 @@ export class AnswerRepository {
     }
   }
 
-  /* 중복 답변을 위한 조회 */
-  async findAnswerByDuplicate(questionId: number): Promise<any> {
+  /* 제출한 답변 조회 */
+  async findOneAnswer(answerId: number): Promise<any> {
     try {
-      const answer = await this.answerRepository.find({
-        where: { questionId },
+      const answer = await this.answerRepository.findOne({
+        where: { answerId },
       });
       return answer;
     } catch (e) {
       console.error(e);
-      throw new Error('AnswerService/findAnswerByDuplicate');
+      throw new Error('AnswerService/findOneAnswer');
     }
   }
 }

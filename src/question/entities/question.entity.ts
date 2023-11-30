@@ -1,10 +1,8 @@
-import { Answer } from 'src/answer/entities/answer.entity';
 import { Option } from 'src/option/entities/option.entity';
 import { Survey } from 'src/survey/entities/survey.entity';
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -39,7 +37,4 @@ export class Question {
 
   @OneToMany(() => Option, (option) => option.questionId)
   option: Option[];
-
-  @OneToMany(() => Answer, (answer) => answer.questionId)
-  answer: Answer[];
 }

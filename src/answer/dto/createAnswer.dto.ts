@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsArray, IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateAnswerDto {
   // surveyId
@@ -6,13 +6,8 @@ export class CreateAnswerDto {
   @IsNotEmpty()
   surveyId: number;
 
-  // questionId
-  @IsNumber()
+  // answerContent
+  @IsArray({ each: true })
   @IsNotEmpty()
-  questionId: number;
-
-  // answerNumber
-  @IsString()
-  @IsNotEmpty()
-  answerNumber: string;
+  answerContent: { questionNumber: number; optionNumber: number[] }[];
 }

@@ -85,6 +85,21 @@ export class QuestionRepository {
     }
   }
 
+  /* 문항 수 체크를 위한 조회 */
+  async findAllQuestion(surveyId: number): Promise<any> {
+    try {
+      const question = await this.questionRepository
+        .createQueryBuilder('question')
+        .select('questionId')
+        .where('surveyId = :surveyId', { surveyId })
+        .getRawMany();
+      return question;
+    } catch (e) {
+      console.error(e);
+      throw new Error('QuestionRepository/findAllQuestion');
+    }
+  }
+
   /* 설문지에 맞는 문항 조회 */
   async findAllQuestionWithOptions(surveyId: number): Promise<any> {
     try {

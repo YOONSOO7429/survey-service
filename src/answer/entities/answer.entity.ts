@@ -1,5 +1,3 @@
-import { Option } from 'src/option/entities/option.entity';
-import { Question } from 'src/question/entities/question.entity';
 import { Survey } from 'src/survey/entities/survey.entity';
 import {
   Column,
@@ -20,12 +18,11 @@ export class Answer {
   @JoinColumn({ name: 'surveyId' })
   surveyId: number;
 
-  @ManyToOne(() => Question, (question) => question.answer)
-  @JoinColumn({ name: 'questionId' })
-  questionId: number;
+  @Column({ type: 'json', array: true, nullable: true })
+  answerContent: { questionNumber: number; optionNumber: number[] }[];
 
-  @Column({ type: 'varchar' })
-  answerNumber: string;
+  @Column({ type: 'boolean', default: false })
+  answerDone: boolean;
 
   @CreateDateColumn({ type: 'timestamp' })
   answerCreatedAt: Date;

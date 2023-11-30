@@ -46,15 +46,14 @@ export class AnswerService {
     }
   }
 
-  /* 중복 답변을 위한 조회 */
-  async findAnswerByDuplicate(questionId: number): Promise<any> {
+  /* 제출한 답변 조회 */
+  async findOneAnswer(answerId: number): Promise<any> {
     try {
-      const answer =
-        await this.answerRepository.findAnswerByDuplicate(questionId);
+      const answer = await this.answerRepository.findOneAnswer(answerId);
       return answer;
     } catch (e) {
       console.error(e);
-      throw new Error('AnswerService/findOneAnswerByDuplicate');
+      throw new Error('AnswerService/findOneAnswer');
     }
   }
 }

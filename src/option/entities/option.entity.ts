@@ -1,4 +1,3 @@
-import { Answer } from 'src/answer/entities/answer.entity';
 import { Question } from 'src/question/entities/question.entity';
 import {
   Column,
@@ -7,7 +6,6 @@ import {
   Entity,
   JoinColumn,
   ManyToOne,
-  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
