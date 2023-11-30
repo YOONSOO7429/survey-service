@@ -21,6 +21,9 @@ export class Survey {
   @Column({ type: 'text' })
   surveyContent: string;
 
+  @Column({ type: 'boolean', default: false })
+  surveyIsDone: boolean;
+
   @CreateDateColumn({ type: 'timestamp' })
   surveyCreatedAt: Date;
 

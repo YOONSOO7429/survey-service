@@ -127,4 +127,39 @@ export class SurveyController {
       throw new Error('SurveyController/getSurveyDetail');
     }
   }
+
+  /* 설문지 완료 */
+  @Put(':surveyId/surveyIsDone')
+  async surveyIsDone(
+    @Param('surveyId') surveyId: number,
+    @Res() res: any,
+  ): Promise<any> {
+    try {
+      // 설문지 조회
+      const survey = await this.surveyService.findOneSurvey(surveyId);
+      if (!survey) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .json({ message: '존재하지 않는 설문지입니다.' });
+      }
+      await this.surveyService.surveyIsDone(surveyId);
+      return res.status(HttpStatus.OK).json({ message: '설문지 완료' });
+    } catch (e) {
+      console.error(e);
+      throw new Error('SurveyController/surveyIsDone');
+    }
+  }
+
+  /* 완료한 설문지 확인 */
+  @Get('surveyIsDone')
+  async getSurveyIsDone(@Res() res: any): Promise<any> {
+    try {
+      // 완료된 설문지 조회
+      const surveyIsDone = await this.surveyService.findAllSurveyIsDone();
+      return res.status(HttpStatus.OK).json(surveyIsDone);
+    } catch (e) {
+      console.error(e);
+      throw new Error('SurveyController/getSurveyIsDone');
+    }
+  }
 }

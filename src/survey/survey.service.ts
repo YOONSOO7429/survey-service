@@ -56,4 +56,26 @@ export class SurveyService {
       throw new Error('SurveyService/findOneSurvey');
     }
   }
+
+  /* 설문지 완료 */
+  async surveyIsDone(surveyId: number): Promise<any> {
+    try {
+      const surveyIsDone = await this.surveyRepository.surveyIsDone(surveyId);
+      return surveyIsDone;
+    } catch (e) {
+      console.error(e);
+      throw new Error('SurveyService/surveyIsDone');
+    }
+  }
+
+  /* 완료한 설문지 확인 */
+  async findAllSurveyIsDone(): Promise<any> {
+    try {
+      const surveyIsDone = await this.surveyRepository.findAllSurveyIsDone();
+      return surveyIsDone;
+    } catch (e) {
+      console.error(e);
+      throw new Error('SurveyService/findAllSurveyIsDone');
+    }
+  }
 }

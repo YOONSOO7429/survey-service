@@ -77,4 +77,31 @@ export class SurveyRepository {
       throw new Error('SurveyRepository/findOneSurvey');
     }
   }
+
+  /* 설문지 완료 */
+  async surveyIsDone(surveyId: number): Promise<any> {
+    try {
+      const surveyIsDone = await this.surveyRepository.update(
+        { surveyId },
+        { surveyIsDone: true },
+      );
+      return surveyIsDone;
+    } catch (e) {
+      console.error(e);
+      throw new Error('SurveyService/surveyIsDone');
+    }
+  }
+
+  /* 완료한 설문지 확인 */
+  async findAllSurveyIsDone(): Promise<any> {
+    try {
+      const surveyIsDone = await this.surveyRepository.find({
+        where: { surveyIsDone: true },
+      });
+      return surveyIsDone;
+    } catch (e) {
+      console.error(e);
+      throw new Error('SurveyService/findAllSurveyIsDone');
+    }
+  }
 }
