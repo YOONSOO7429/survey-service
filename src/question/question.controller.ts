@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Put,
   Delete,
+  Get,
 } from '@nestjs/common';
 import { QuestionService } from './question.service';
 import { CreateQuestionDto } from './dto/createQuestion.dto';
@@ -87,7 +88,7 @@ export class QuestionController {
     }
   }
 
-  /* 문항 삭제(softDelete) */
+  /* 문항 삭제 */
   @Delete(':surveyId/:questionId/editQuestion')
   async deleteQuestion(
     @Param('surveyId') surveyId: number,
@@ -123,6 +124,22 @@ export class QuestionController {
     } catch (e) {
       console.error(e);
       throw new Error('QuestionController/deleteQuestion');
+    }
+  }
+
+  /* 문항 전체 조회 */
+  @Get(':surveyId')
+  async getAllQuestion(
+    @Param('surveyId') surveyId: number,
+    @Res() res: any,
+  ): Promise<any> {
+    try {
+      // 문항 확인
+      const question = await this.questionService.findAllQuestion(surveyId);
+      return res.status(HttpStatus.OK).json(question);
+    } catch (e) {
+      console.error(e);
+      throw new Error('QuestionController/getAllQuestion');
     }
   }
 }

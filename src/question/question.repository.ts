@@ -59,7 +59,7 @@ export class QuestionRepository {
     }
   }
 
-  /* 문항 삭제(softDelete) */
+  /* 문항 삭제 */
   async deleteQuestion(questionId: number): Promise<any> {
     try {
       const deleteQuestion = await this.questionRepository.delete({
@@ -85,12 +85,18 @@ export class QuestionRepository {
     }
   }
 
-  /* 문항 수 체크를 위한 조회 */
+  /* 문항 전체 조회 */
   async findAllQuestion(surveyId: number): Promise<any> {
     try {
       const question = await this.questionRepository
         .createQueryBuilder('question')
-        .select('questionId')
+        .select([
+          'surveyId',
+          'questionId',
+          'questionNumber',
+          'questionContent',
+          'duplicateAnswer',
+        ])
         .where('surveyId = :surveyId', { surveyId })
         .getRawMany();
       return question;
@@ -119,7 +125,7 @@ export class QuestionRepository {
               'optionContent', option.optionContent,)
               )AS option`,
         ])
-        .where('surveyId = :surveyId', { surveyId })
+        .where('question.surveyId = :surveyId', { surveyId })
         .getRawMany();
       return question;
     } catch (e) {

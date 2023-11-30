@@ -71,4 +71,19 @@ export class OptionRepository {
       throw new Error('OptionService/findOneOption');
     }
   }
+
+  /* 선택지 전체 조회 */
+  async findAllOption(questionId: number): Promise<any> {
+    try {
+      const option = await this.optionRepository
+        .createQueryBuilder('option')
+        .select(['questionId', 'optionId', 'optionNumber', 'optionContent'])
+        .where('questionId = :questionId', { questionId })
+        .getRawMany();
+      return option;
+    } catch (e) {
+      console.error(e);
+      throw new Error('OptionService/findAllOption');
+    }
+  }
 }

@@ -7,6 +7,7 @@ import {
   HttpStatus,
   Put,
   Delete,
+  Get,
 } from '@nestjs/common';
 import { OptionService } from './option.service';
 import { CreateOptionDto } from './dto/createOption.dto';
@@ -87,7 +88,7 @@ export class OptionController {
     }
   }
 
-  /* 선택지 삭제(softDelete) */
+  /* 선택지 삭제 */
   @Delete(':questionId/:optionId/deleteOption')
   async deleteOption(
     @Param('optionId') optionId: number,
@@ -122,6 +123,30 @@ export class OptionController {
     } catch (e) {
       console.error(e);
       throw new Error('OptionController/deleteOption');
+    }
+  }
+
+  /* 선택지 전체 조회 */
+  @Get(':questionId')
+  async getAllQuestion(
+    @Param('questionId') questionId: number,
+    @Res() res: any,
+  ): Promise<any> {
+    try {
+      // 문항 조회
+      const question = await this.questionService.findOneQuestion(questionId);
+      if (!question) {
+        return res
+          .status(HttpStatus.NOT_FOUND)
+          .json({ message: '존재하지 않는 문항입니다.' });
+      }
+
+      // 선택지 조회
+      const option = await this.optionService.findAllOption(questionId);
+      return res.status(HttpStatus.OK).json(option);
+    } catch (e) {
+      console.error(e);
+      throw new Error('OptionController/getAllQuestion');
     }
   }
 }

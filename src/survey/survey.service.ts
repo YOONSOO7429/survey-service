@@ -35,7 +35,7 @@ export class SurveyService {
     }
   }
 
-  /* 설문지 삭제(softDelete) */
+  /* 설문지 삭제 */
   async deleteSurvey(surveyId: number): Promise<any> {
     try {
       const deleteSurvey = await this.surveyRepository.deleteSurvey(surveyId);

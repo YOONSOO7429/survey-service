@@ -72,7 +72,7 @@ export class SurveyController {
     }
   }
 
-  /* 설문지 삭제(softDelete) */
+  /* 설문지 삭제 */
   @Delete(':surveyId/deleteSurvey')
   async deleteSurvey(
     @Param('surveyId') surveyId: number,

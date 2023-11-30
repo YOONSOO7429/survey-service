@@ -7,6 +7,7 @@ import {
   Put,
   Param,
   Delete,
+  Get,
 } from '@nestjs/common';
 import { AnswerService } from './answer.service';
 import { CreateAnswerDto } from './dto/createAnswer.dto';
@@ -103,6 +104,22 @@ export class AnswerController {
     } catch (e) {
       console.error(e);
       throw new Error('AnswerController/deleteAnswer');
+    }
+  }
+
+  /* 답변 전체 조회 */
+  @Get(':surveyId')
+  async getAnswer(
+    @Param('surveyId') surveyId: number,
+    @Res() res: any,
+  ): Promise<any> {
+    try {
+      // 답변 전체 조회
+      const answer = await this.answerService.findAllAnswer(surveyId);
+      return res.status(HttpStatus.OK).json(answer);
+    } catch (e) {
+      console.error(e);
+      throw new Error('AnswerController/getAnswer');
     }
   }
 }

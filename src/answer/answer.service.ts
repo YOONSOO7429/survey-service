@@ -56,4 +56,15 @@ export class AnswerService {
       throw new Error('AnswerService/findOneAnswer');
     }
   }
+
+  /* 답변 전체 조회 */
+  async findAllAnswer(surveyId: number): Promise<any> {
+    try {
+      const answer = await this.answerRepository.findAllAnswer(surveyId);
+      return answer;
+    } catch (e) {
+      console.error(e);
+      throw new Error('AnswerService/findAllAnswer');
+    }
+  }
 }

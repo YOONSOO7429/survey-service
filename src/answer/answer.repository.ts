@@ -68,4 +68,19 @@ export class AnswerRepository {
       throw new Error('AnswerService/findOneAnswer');
     }
   }
+
+  /* 답변 전체 조회 */
+  async findAllAnswer(surveyId: number): Promise<any> {
+    try {
+      const answer = await this.answerRepository
+        .createQueryBuilder('answer')
+        .select(['surveyId', 'answerId', 'answerContent', 'answerDone'])
+        .where('surveyId = :surveyId', { surveyId })
+        .getRawMany();
+      return answer;
+    } catch (e) {
+      console.error(e);
+      throw new Error('AnswerService/findAllAnswer');
+    }
+  }
 }

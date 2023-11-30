@@ -3,7 +3,6 @@ import { Question } from 'src/question/entities/question.entity';
 import {
   Column,
   CreateDateColumn,
-  DeleteDateColumn,
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -29,9 +28,6 @@ export class Survey {
 
   @UpdateDateColumn({ type: 'timestamp' })
   surveyUpdatedAt: Date;
-
-  @DeleteDateColumn({ nullable: true })
-  suveyDeletedAt: Date;
 
   @OneToMany(() => Question, (question) => question.surveyId)
   question: Question[];

@@ -62,4 +62,15 @@ export class OptionService {
       throw new Error('OptionService/findOneOption');
     }
   }
+
+  /* 선택지 전체 조회 */
+  async findAllOption(questionId: number): Promise<any> {
+    try {
+      const option = await this.optionRepository.findAllOption(questionId);
+      return option;
+    } catch (e) {
+      console.error(e);
+      throw new Error('OptionService/findAllOption');
+    }
+  }
 }

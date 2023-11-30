@@ -44,20 +44,11 @@ export class SurveyRepository {
     }
   }
 
-  /* 설문지 삭제(softDelete) */
+  /* 설문지 삭제 */
   async deleteSurvey(surveyId: number): Promise<any> {
     try {
-      // 한국 시간
-      const koreaTimezoneOffset = 9 * 60;
-      const currentDate = new Date();
-      const today = new Date(
-        currentDate.getTime() + koreaTimezoneOffset * 60000,
-      );
       // 설문지 삭제
-      const deleteSurvey = await this.surveyRepository.update(
-        { surveyId },
-        { surveyUpdatedAt: today },
-      );
+      const deleteSurvey = await this.surveyRepository.delete({ surveyId });
       return deleteSurvey;
     } catch (e) {
       console.error(e);
@@ -69,7 +60,7 @@ export class SurveyRepository {
   async findOneSurvey(surveyId: number): Promise<any> {
     try {
       const survey = await this.surveyRepository.findOne({
-        where: { surveyId },
+        where: { surveyId, surveyIsDone: false },
       });
       return survey;
     } catch (e) {
