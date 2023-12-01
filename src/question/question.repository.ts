@@ -15,16 +15,16 @@ export class QuestionRepository {
   /* 문항 생성 */
   async createQuestion(
     createQuestionDto: CreateQuestionDto,
-    surveyId: number,
+    survey_id: number,
   ): Promise<any> {
     try {
-      const { questionNumber, questionContent, duplicateAnswer } =
+      const { question_number, question_content, duplicate_answer } =
         createQuestionDto;
       const question = new Question();
-      question.questionNumber = questionNumber;
-      question.questionContent = questionContent;
-      question.duplicateAnswer = duplicateAnswer;
-      question.surveyId = surveyId;
+      question.question_number = question_number;
+      question.question_content = question_content;
+      question.duplicate_answer = duplicate_answer;
+      question.survey_id = survey_id;
       await this.questionRepository.save(question);
       return question;
     } catch (e) {
@@ -36,21 +36,21 @@ export class QuestionRepository {
   /* 문항 수정 */
   async editQuestion(
     editQuestionDto: EditQuestionDto,
-    questionId: number,
+    question_id: number,
   ): Promise<any> {
     try {
-      const { questionNumber, questionContent, duplicateAnswer } =
+      const { question_number, question_content, duplicate_answer } =
         editQuestionDto;
-      if (duplicateAnswer) {
+      if (duplicate_answer) {
         const editQuestion = await this.questionRepository.update(
-          { questionId },
-          { questionNumber, questionContent, duplicateAnswer },
+          { question_id },
+          { question_number, question_content, duplicate_answer },
         );
         return editQuestion;
       }
       const editQuestion = await this.questionRepository.update(
-        { questionId },
-        { questionNumber, questionContent },
+        { question_id },
+        { question_number, question_content },
       );
       return editQuestion;
     } catch (e) {
@@ -60,10 +60,10 @@ export class QuestionRepository {
   }
 
   /* 문항 삭제 */
-  async deleteQuestion(questionId: number): Promise<any> {
+  async deleteQuestion(question_id: number): Promise<any> {
     try {
       const deleteQuestion = await this.questionRepository.delete({
-        questionId,
+        question_id,
       });
       return deleteQuestion;
     } catch (e) {
@@ -73,10 +73,10 @@ export class QuestionRepository {
   }
 
   /* 문항 상세 조회 */
-  async findOneQuestion(questionId: number): Promise<any> {
+  async findOneQuestion(question_id: number): Promise<any> {
     try {
       const question = await this.questionRepository.findOne({
-        where: { questionId },
+        where: { question_id },
       });
       return question;
     } catch (e) {
@@ -86,18 +86,17 @@ export class QuestionRepository {
   }
 
   /* 문항 전체 조회 */
-  async findAllQuestion(surveyId: number): Promise<any> {
+  async findAllQuestion(survey_id: number): Promise<any> {
     try {
       const question = await this.questionRepository
         .createQueryBuilder('question')
         .select([
-          'surveyId',
-          'questionId',
-          'questionNumber',
-          'questionContent',
-          'duplicateAnswer',
+          'question_id',
+          'question_number',
+          'question_content',
+          'duplicate_answer',
         ])
-        .where('surveyId = :surveyId', { surveyId })
+        .where('survey_id = :survey_id', { survey_id })
         .getRawMany();
       return question;
     } catch (e) {
@@ -107,25 +106,19 @@ export class QuestionRepository {
   }
 
   /* 설문지에 맞는 문항 조회 */
-  async findAllQuestionWithOptions(surveyId: number): Promise<any> {
+  async findAllQuestionWithOptions(survey_id: number): Promise<any> {
     try {
       const question = await this.questionRepository
         .createQueryBuilder('question')
-        .leftJoin('option', 'option', 'option.questionId = question.questionId')
+        .leftJoinAndSelect('question.option', 'option')
         .select([
-          'question.surveyId AS surveyId',
-          'question.questionId AS questionId',
-          'question.questionNumber AS questionNumber',
-          'question.questionContent AS questionContent',
-          'question.duplicateAnswer AS duplicateAnswer',
-          `JSON_ARRAYAGG(
-            JSON_OBJECT(
-              'optionId', option.optionId, 
-              'optionNumber', option.optionNumber, 
-              'optionContent', option.optionContent,)
-              )AS option`,
+          'question.survey_id AS survey_id',
+          'question.question_id AS question_id',
+          'question.question_number AS question_number',
+          'question.question_content AS question_content',
+          'question.duplicate_answer AS duplicate_answer',
         ])
-        .where('question.surveyId = :surveyId', { surveyId })
+        .where('question.survey_id = :survey_id', { survey_id })
         .getRawMany();
       return question;
     } catch (e) {

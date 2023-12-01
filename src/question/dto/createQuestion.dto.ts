@@ -7,18 +7,18 @@ import {
 } from 'class-validator';
 
 export class CreateQuestionDto {
-  // questionNumber
+  // question_number
   @IsNumber()
   @IsNotEmpty()
-  questionNumber: number;
+  question_number: number;
 
-  // questionContent
+  // question_content
   @IsString()
   @IsNotEmpty()
-  questionContent: string;
+  question_content: string;
 
-  // duplicateAnswer
+  // duplicate_answer
   @IsBoolean()
   @IsOptional()
-  duplicateAnswer: boolean;
+  duplicate_answer: boolean;
 }

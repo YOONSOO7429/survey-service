@@ -1,13 +1,13 @@
 import { IsString, IsNotEmpty } from 'class-validator';
 
 export class CreateSurveyDto {
-  // surveyTitle
+  // survey_title
   @IsString()
   @IsNotEmpty()
-  surveyTitle: string;
+  survey_title: string;
 
-  // surveyContent
+  // survey_content
   @IsString()
   @IsNotEmpty()
-  surveyContent: string;
+  survey_content: string;
 }

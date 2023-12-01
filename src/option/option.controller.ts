@@ -22,15 +22,15 @@ export class OptionController {
   ) {}
 
   /* 선택지 생성 */
-  @Post(':questionId/createOption')
+  @Post(':question_id/createOption')
   async createOption(
     @Body() createOptionDto: CreateOptionDto,
-    @Param('questionId') questionId: number,
+    @Param('question_id') question_id: number,
     @Res() res: any,
   ): Promise<any> {
     try {
       // 문항 조회
-      const question = await this.questionService.findOneQuestion(questionId);
+      const question = await this.questionService.findOneQuestion(question_id);
       if (!question) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -38,7 +38,7 @@ export class OptionController {
       }
 
       // 선택지 생성
-      await this.optionService.createOption(createOptionDto, questionId);
+      await this.optionService.createOption(createOptionDto, question_id);
       return res.status(HttpStatus.OK).json({ message: '선택지 생성 완료' });
     } catch (e) {
       console.error(e);
@@ -47,16 +47,16 @@ export class OptionController {
   }
 
   /* 선택지 수정 */
-  @Put(':questionId/:optionId/editOption')
+  @Put(':question_id/:option_id/editOption')
   async editOption(
     @Body() editOptionDto: EditOptionDto,
-    @Param('optionId') optionId: number,
-    @Param('questionId') questionId: number,
+    @Param('option_id') option_id: number,
+    @Param('question_id') question_id: number,
     @Res() res: any,
   ): Promise<any> {
     try {
       // 문항 조회
-      const question = await this.questionService.findOneQuestion(questionId);
+      const question = await this.questionService.findOneQuestion(question_id);
       if (!question) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -64,7 +64,7 @@ export class OptionController {
       }
 
       // 선택지 조회
-      const option = await this.optionService.findOneOption(optionId);
+      const option = await this.optionService.findOneOption(option_id);
       if (!option) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -74,7 +74,7 @@ export class OptionController {
       // 선택지 수정
       const editOption = await this.optionService.editOption(
         editOptionDto,
-        optionId,
+        option_id,
       );
       if (editOption.affected === 0) {
         return res
@@ -89,15 +89,15 @@ export class OptionController {
   }
 
   /* 선택지 삭제 */
-  @Delete(':questionId/:optionId/deleteOption')
+  @Delete(':question_id/:option_id/deleteOption')
   async deleteOption(
-    @Param('optionId') optionId: number,
-    @Param('questionId') questionId: number,
+    @Param('option_id') option_id: number,
+    @Param('question_id') question_id: number,
     @Res() res: any,
   ): Promise<any> {
     try {
       // 문항 조회
-      const question = await this.questionService.findOneQuestion(questionId);
+      const question = await this.questionService.findOneQuestion(question_id);
       if (!question) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -105,7 +105,7 @@ export class OptionController {
       }
 
       // 선택지 조회
-      const option = await this.optionService.findOneOption(optionId);
+      const option = await this.optionService.findOneOption(option_id);
       if (!option) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -113,7 +113,7 @@ export class OptionController {
       }
 
       // 선택지 삭제
-      const deleteOption = await this.optionService.deleteOption(optionId);
+      const deleteOption = await this.optionService.deleteOption(question_id);
       if (deleteOption.affected === 0) {
         return res
           .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -127,14 +127,14 @@ export class OptionController {
   }
 
   /* 선택지 전체 조회 */
-  @Get(':questionId')
+  @Get(':question_id')
   async getAllQuestion(
-    @Param('questionId') questionId: number,
+    @Param('question_id') question_id: number,
     @Res() res: any,
   ): Promise<any> {
     try {
       // 문항 조회
-      const question = await this.questionService.findOneQuestion(questionId);
+      const question = await this.questionService.findOneQuestion(question_id);
       if (!question) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -142,7 +142,7 @@ export class OptionController {
       }
 
       // 선택지 조회
-      const option = await this.optionService.findAllOption(questionId);
+      const option = await this.optionService.findAllOption(question_id);
       return res.status(HttpStatus.OK).json(option);
     } catch (e) {
       console.error(e);

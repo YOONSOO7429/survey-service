@@ -14,27 +14,27 @@ import {
 @Entity('question')
 export class Question {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  questionId: number;
+  question_id: number;
 
   @ManyToOne(() => Survey, (survey) => survey.question)
-  @JoinColumn({ name: 'surveyId' })
-  surveyId: number;
+  @JoinColumn({ name: 'survey_id' })
+  survey_id: number;
 
   @Column({ type: 'int' })
-  questionNumber: number;
+  question_number: number;
 
   @Column({ type: 'varchar' })
-  questionContent: string;
+  question_content: string;
 
   @Column({ type: 'boolean', default: false })
-  duplicateAnswer: Boolean;
+  duplicate_answer: Boolean;
 
   @CreateDateColumn({ type: 'timestamp' })
-  questionCreatedAt: Date;
+  question_created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  questionUpdatedAt: Date;
+  question_updated_at: Date;
 
-  @OneToMany(() => Option, (option) => option.questionId)
+  @OneToMany(() => Option, (option) => option.question_id)
   option: Option[];
 }

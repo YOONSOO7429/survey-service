@@ -14,10 +14,10 @@ export class SurveyRepository {
   /* 설문지 생성 */
   async createSurvey(createSurveyDto: CreateSurveyDto): Promise<any> {
     try {
-      const { surveyContent, surveyTitle } = createSurveyDto;
+      const { survey_content, survey_title } = createSurveyDto;
       const survey = new Survey();
-      survey.surveyTitle = surveyTitle;
-      survey.surveyContent = surveyContent;
+      survey.survey_title = survey_title;
+      survey.survey_content = survey_content;
       await this.surveyRepository.save(survey);
       return survey;
     } catch (e) {
@@ -29,13 +29,13 @@ export class SurveyRepository {
   /* 설문지 수정 */
   async editSurvey(
     editSurveyDto: EditSurveyDto,
-    surveyId: number,
+    survey_id: number,
   ): Promise<any> {
     try {
-      const { surveyTitle, surveyContent } = editSurveyDto;
+      const { survey_title, survey_content } = editSurveyDto;
       const editSurvey = await this.surveyRepository.update(
-        { surveyId },
-        { surveyTitle, surveyContent },
+        { survey_id },
+        { survey_title, survey_content },
       );
       return editSurvey;
     } catch (e) {
@@ -45,10 +45,10 @@ export class SurveyRepository {
   }
 
   /* 설문지 삭제 */
-  async deleteSurvey(surveyId: number): Promise<any> {
+  async deleteSurvey(survey_id: number): Promise<any> {
     try {
       // 설문지 삭제
-      const deleteSurvey = await this.surveyRepository.delete({ surveyId });
+      const deleteSurvey = await this.surveyRepository.delete({ survey_id });
       return deleteSurvey;
     } catch (e) {
       console.error(e);
@@ -57,10 +57,10 @@ export class SurveyRepository {
   }
 
   /* 설문지 상세 조회 */
-  async findOneSurvey(surveyId: number): Promise<any> {
+  async findOneSurvey(survey_id: number): Promise<any> {
     try {
       const survey = await this.surveyRepository.findOne({
-        where: { surveyId, surveyIsDone: false },
+        where: { survey_id, survey_is_done: false },
       });
       return survey;
     } catch (e) {
@@ -70,11 +70,11 @@ export class SurveyRepository {
   }
 
   /* 설문지 완료 */
-  async surveyIsDone(surveyId: number): Promise<any> {
+  async surveyIsDone(survey_id: number): Promise<any> {
     try {
       const surveyIsDone = await this.surveyRepository.update(
-        { surveyId },
-        { surveyIsDone: true },
+        { survey_id },
+        { survey_is_done: true },
       );
       return surveyIsDone;
     } catch (e) {
@@ -87,7 +87,7 @@ export class SurveyRepository {
   async findAllSurveyIsDone(): Promise<any> {
     try {
       const surveyIsDone = await this.surveyRepository.find({
-        where: { surveyIsDone: true },
+        where: { survey_is_done: true },
       });
       return surveyIsDone;
     } catch (e) {

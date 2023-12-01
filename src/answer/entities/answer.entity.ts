@@ -12,21 +12,21 @@ import {
 @Entity('answer')
 export class Answer {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  answerId: number;
+  answer_id: number;
 
   @ManyToOne(() => Survey, (survey) => survey.answer)
-  @JoinColumn({ name: 'surveyId' })
-  surveyId: number;
+  @JoinColumn({ name: 'survey_id' })
+  survey_id: number;
 
   @Column({ type: 'json', array: true, nullable: true })
-  answerContent: { questionNumber: number; optionNumber: number[] }[];
+  answer_content: { question_number: number; option_number: number[] }[];
 
   @Column({ type: 'boolean', default: false })
-  answerDone: boolean;
+  answer_is_done: boolean;
 
   @CreateDateColumn({ type: 'timestamp' })
-  answerCreatedAt: Date;
+  answer_created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  answerUpdatedAt: Date;
+  answer_updated_at: Date;
 }

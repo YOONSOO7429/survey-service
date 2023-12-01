@@ -1,18 +1,18 @@
-import { IsBoolean, IsOptional, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class EditQuestionDto {
-  // questionNumber
+  // question_number
+  @IsNumber()
+  @IsOptional()
+  question_number: number;
+
+  // question_content
   @IsString()
   @IsOptional()
-  questionNumber: number;
+  question_content: string;
 
-  // questionContent
-  @IsString()
-  @IsOptional()
-  questionContent: string;
-
-  // duplicateAnswer
+  // duplicate_answer
   @IsBoolean()
   @IsOptional()
-  duplicateAnswer: boolean;
+  duplicate_answer: boolean;
 }

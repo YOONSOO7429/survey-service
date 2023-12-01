@@ -40,15 +40,15 @@ export class SurveyController {
   }
 
   /* 설문지 수정 */
-  @Put(':surveyId/editSurvey')
+  @Put(':survey_id/editSurvey')
   async editSurvey(
     @Body() editSurveyDto: EditSurveyDto,
-    @Param('surveyId') surveyId: number,
+    @Param('survey_id') survey_id: number,
     @Res() res: any,
   ): Promise<any> {
     try {
       // 설문지 조회
-      const survey = await this.surveyService.findOneSurvey(surveyId);
+      const survey = await this.surveyService.findOneSurvey(survey_id);
       if (!survey) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -58,7 +58,7 @@ export class SurveyController {
       // 설문지 수정
       const editSurvey = await this.surveyService.editSurvey(
         editSurveyDto,
-        surveyId,
+        survey_id,
       );
       if (editSurvey.affected === 0) {
         return res
@@ -73,14 +73,14 @@ export class SurveyController {
   }
 
   /* 설문지 삭제 */
-  @Delete(':surveyId/deleteSurvey')
+  @Delete(':survey_id/deleteSurvey')
   async deleteSurvey(
-    @Param('surveyId') surveyId: number,
+    @Param('survey_id') survey_id: number,
     @Res() res: any,
   ): Promise<any> {
     try {
       // 설문지 조회
-      const survey = await this.surveyService.findOneSurvey(surveyId);
+      const survey = await this.surveyService.findOneSurvey(survey_id);
       if (!survey) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -88,7 +88,7 @@ export class SurveyController {
       }
 
       // 설문지 삭제
-      const deleteSurvey = await this.surveyService.deleteSurvey(surveyId);
+      const deleteSurvey = await this.surveyService.deleteSurvey(survey_id);
       if (deleteSurvey.affected === 0) {
         return res
           .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -103,14 +103,14 @@ export class SurveyController {
   }
 
   /* 설문지 상세 조회 */
-  @Get(':surveyId')
+  @Get(':survey_id')
   async getSurveyDetail(
-    @Param('surveyId') surveyId: number,
+    @Param('survey_id') survey_id: number,
     @Res() res: any,
   ): Promise<any> {
     try {
       // 설문지 조회
-      const survey = await this.surveyService.findOneSurvey(surveyId);
+      const survey = await this.surveyService.findOneSurvey(survey_id);
       if (!survey) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -119,7 +119,7 @@ export class SurveyController {
 
       // 문항 조회
       const question =
-        await this.questionService.findAllQuestionWithOptions(surveyId);
+        await this.questionService.findAllQuestionWithOptions(survey_id);
 
       return res.status(HttpStatus.OK).json({ survey, question });
     } catch (e) {
@@ -129,20 +129,20 @@ export class SurveyController {
   }
 
   /* 설문지 완료 */
-  @Put(':surveyId/surveyIsDone')
+  @Put(':survey_id/surveyIsDone')
   async surveyIsDone(
-    @Param('surveyId') surveyId: number,
+    @Param('survey_id') survey_id: number,
     @Res() res: any,
   ): Promise<any> {
     try {
       // 설문지 조회
-      const survey = await this.surveyService.findOneSurvey(surveyId);
+      const survey = await this.surveyService.findOneSurvey(survey_id);
       if (!survey) {
         return res
           .status(HttpStatus.NOT_FOUND)
           .json({ message: '존재하지 않는 설문지입니다.' });
       }
-      await this.surveyService.surveyIsDone(surveyId);
+      await this.surveyService.surveyIsDone(survey_id);
       return res.status(HttpStatus.OK).json({ message: '설문지 완료' });
     } catch (e) {
       console.error(e);
@@ -155,8 +155,8 @@ export class SurveyController {
   async getSurveyIsDone(@Res() res: any): Promise<any> {
     try {
       // 완료된 설문지 조회
-      const surveyIsDone = await this.surveyService.findAllSurveyIsDone();
-      return res.status(HttpStatus.OK).json(surveyIsDone);
+      const survey_is_done = await this.surveyService.findAllSurveyIsDone();
+      return res.status(HttpStatus.OK).json(survey_is_done);
     } catch (e) {
       console.error(e);
       throw new Error('SurveyController/getSurveyIsDone');

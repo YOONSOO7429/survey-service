@@ -14,11 +14,11 @@ export class AnswerRepository {
   /* 답변 생성 */
   async createAnswer(createAnswerDto: CreateAnswerDto): Promise<any> {
     try {
-      const { surveyId, answerContent } = createAnswerDto;
+      const { survey_id, answer_content } = createAnswerDto;
       const answer = new Answer();
-      answer.surveyId = surveyId;
-      answer.answerContent = answerContent;
-      answer.answerDone = true;
+      answer.survey_id = survey_id;
+      answer.answer_content = answer_content;
+      answer.answer_is_done = true;
       await this.answerRepository.save(answer);
       return answer;
     } catch (e) {
@@ -30,13 +30,13 @@ export class AnswerRepository {
   /* 답변 수정 */
   async editAnswer(
     editAnswerDto: EditAnswerDto,
-    answerId: number,
+    answer_id: number,
   ): Promise<any> {
     try {
-      const { answerContent } = editAnswerDto;
+      const { answer_content } = editAnswerDto;
       const editAnswer = await this.answerRepository.update(
-        { answerId },
-        { answerContent },
+        { answer_id },
+        { answer_content },
       );
       return editAnswer;
     } catch (e) {
@@ -46,9 +46,9 @@ export class AnswerRepository {
   }
 
   /* 답변 삭제 */
-  async deleteAnswer(answerId: number): Promise<any> {
+  async deleteAnswer(answer_id: number): Promise<any> {
     try {
-      const deleteAnswer = await this.answerRepository.delete({ answerId });
+      const deleteAnswer = await this.answerRepository.delete({ answer_id });
       return deleteAnswer;
     } catch (e) {
       console.error(e);
@@ -57,10 +57,10 @@ export class AnswerRepository {
   }
 
   /* 제출한 답변 조회 */
-  async findOneAnswer(answerId: number): Promise<any> {
+  async findOneAnswer(answer_id: number): Promise<any> {
     try {
       const answer = await this.answerRepository.findOne({
-        where: { answerId },
+        where: { answer_id },
       });
       return answer;
     } catch (e) {
@@ -70,12 +70,12 @@ export class AnswerRepository {
   }
 
   /* 답변 전체 조회 */
-  async findAllAnswer(surveyId: number): Promise<any> {
+  async findAllAnswer(survey_id: number): Promise<any> {
     try {
       const answer = await this.answerRepository
         .createQueryBuilder('answer')
-        .select(['surveyId', 'answerId', 'answerContent', 'answerDone'])
-        .where('surveyId = :surveyId', { surveyId })
+        .select(['survey_id', 'answer_id', 'answer_content', 'answer_is_done'])
+        .where('survey_id = :survey_id', { survey_id })
         .getRawMany();
       return answer;
     } catch (e) {

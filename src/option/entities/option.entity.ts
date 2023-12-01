@@ -13,21 +13,21 @@ import {
 @Entity('option')
 export class Option {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  optionId: number;
+  option_id: number;
 
   @ManyToOne(() => Question, (question) => question.option)
-  @JoinColumn({ name: 'questionId' })
-  questionId: number;
+  @JoinColumn({ name: 'question_id' })
+  question_id: number;
 
-  @Column({ type: 'int' })
-  optionNumber: number;
+  @Column({ type: 'bigint' })
+  option_number: number;
 
   @Column({ type: 'varchar' })
-  optionContent: string;
+  option_content: string;
 
   @CreateDateColumn({ type: 'timestamp' })
-  optionCreatedAt: Date;
+  option_created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  optionUpdatedAt: Date;
+  option_updated_at: Date;
 }

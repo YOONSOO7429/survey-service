@@ -1,13 +1,13 @@
 import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CreateOptionDto {
-  // optionNumber
+  // option_number
   @IsNumber()
   @IsNotEmpty()
-  optionNumber: number;
+  option_number: number;
 
-  // optionContent
+  // option_content
   @IsString()
   @IsNotEmpty()
-  optionContent: string;
+  option_content: string;
 }

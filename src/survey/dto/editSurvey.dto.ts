@@ -1,13 +1,13 @@
 import { IsOptional, IsString } from 'class-validator';
 
 export class EditSurveyDto {
-  // surveyTitle
+  // survey_title
   @IsString()
   @IsOptional()
-  surveyTitle: string;
+  survey_title: string;
 
-  // surveyContent
+  // survey_content
   @IsString()
   @IsOptional()
-  surveyContent: string;
+  survey_content: string;
 }

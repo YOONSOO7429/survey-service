@@ -12,26 +12,26 @@ import {
 @Entity('survey')
 export class Survey {
   @PrimaryGeneratedColumn('increment', { type: 'bigint' })
-  surveyId: number;
+  survey_id: number;
 
   @Column({ type: 'varchar' })
-  surveyTitle: string;
+  survey_title: string;
 
   @Column({ type: 'text' })
-  surveyContent: string;
+  survey_content: string;
 
   @Column({ type: 'boolean', default: false })
-  surveyIsDone: boolean;
+  survey_is_done: boolean;
 
   @CreateDateColumn({ type: 'timestamp' })
-  surveyCreatedAt: Date;
+  survey_created_at: Date;
 
   @UpdateDateColumn({ type: 'timestamp' })
-  surveyUpdatedAt: Date;
+  survey_updated_at: Date;
 
-  @OneToMany(() => Question, (question) => question.surveyId)
+  @OneToMany(() => Question, (question) => question.survey_id)
   question: Question[];
 
-  @OneToMany(() => Answer, (answer) => answer.surveyId)
+  @OneToMany(() => Answer, (answer) => answer.survey_id)
   answer: Answer[];
 }

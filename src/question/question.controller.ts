@@ -22,15 +22,15 @@ export class QuestionController {
   ) {}
 
   /* 문항 생성 */
-  @Post(':surveyId/createQuestion')
+  @Post(':survey_id/createQuestion')
   async createQuestion(
     @Body() createQuestionDto: CreateQuestionDto,
-    @Param('surveyId') surveyId: number,
+    @Param('survey_id') survey_id: number,
     @Res() res: any,
   ): Promise<any> {
     try {
       // 설문지 확인
-      const survey = await this.surveyService.findOneSurvey(surveyId);
+      const survey = await this.surveyService.findOneSurvey(survey_id);
       if (!survey) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -38,7 +38,7 @@ export class QuestionController {
       }
 
       // 문항 생성
-      await this.questionService.createQuestion(createQuestionDto, surveyId);
+      await this.questionService.createQuestion(createQuestionDto, survey_id);
       return res.status(HttpStatus.OK).json({ message: '문항 생성 완료' });
     } catch (e) {
       console.error(e);
@@ -47,16 +47,16 @@ export class QuestionController {
   }
 
   /* 문항 수정 */
-  @Put(':surveyId/:questionId/editQuestion')
+  @Put(':survey_id/:question_id/editQuestion')
   async editQuestion(
     @Body() editQuestionDto: EditQuestionDto,
-    @Param('surveyId') surveyId: number,
-    @Param('questionId') questionId: number,
+    @Param('survey_id') survey_id: number,
+    @Param('question_id') question_id: number,
     @Res() res: any,
   ): Promise<any> {
     try {
       // 설문지 확인
-      const survey = await this.surveyService.findOneSurvey(surveyId);
+      const survey = await this.surveyService.findOneSurvey(survey_id);
       if (!survey) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -64,7 +64,7 @@ export class QuestionController {
       }
 
       // 문항 확인
-      const question = await this.questionService.findOneQuestion(questionId);
+      const question = await this.questionService.findOneQuestion(question_id);
       if (!question) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -72,9 +72,9 @@ export class QuestionController {
       }
 
       // 문항 수정
-      const editQuestion = await this.questionService.createQuestion(
+      const editQuestion = await this.questionService.editQuestion(
         editQuestionDto,
-        questionId,
+        question_id,
       );
       if (editQuestion.affected === 0) {
         return res
@@ -89,15 +89,15 @@ export class QuestionController {
   }
 
   /* 문항 삭제 */
-  @Delete(':surveyId/:questionId/editQuestion')
+  @Delete(':survey_id/:question_id/deleteQuestion')
   async deleteQuestion(
-    @Param('surveyId') surveyId: number,
-    @Param('questionId') questionId: number,
+    @Param('survey_id') survey_id: number,
+    @Param('question_id') question_id: number,
     @Res() res: any,
   ): Promise<any> {
     try {
       // 설문지 확인
-      const survey = await this.surveyService.findOneSurvey(surveyId);
+      const survey = await this.surveyService.findOneSurvey(survey_id);
       if (!survey) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -105,7 +105,7 @@ export class QuestionController {
       }
 
       // 문항 확인
-      const question = await this.questionService.findOneQuestion(questionId);
+      const question = await this.questionService.findOneQuestion(question_id);
       if (!question) {
         return res
           .status(HttpStatus.NOT_FOUND)
@@ -114,7 +114,7 @@ export class QuestionController {
 
       // 문항 삭제
       const deleteQuestion =
-        await this.questionService.deleteQuestion(questionId);
+        await this.questionService.deleteQuestion(question_id);
       if (deleteQuestion.affected === 0) {
         return res
           .status(HttpStatus.INTERNAL_SERVER_ERROR)
@@ -128,14 +128,14 @@ export class QuestionController {
   }
 
   /* 문항 전체 조회 */
-  @Get(':surveyId')
+  @Get(':survey_id')
   async getAllQuestion(
-    @Param('surveyId') surveyId: number,
+    @Param('survey_id') survey_id: number,
     @Res() res: any,
   ): Promise<any> {
     try {
       // 문항 확인
-      const question = await this.questionService.findAllQuestion(surveyId);
+      const question = await this.questionService.findAllQuestion(survey_id);
       return res.status(HttpStatus.OK).json(question);
     } catch (e) {
       console.error(e);

@@ -1,13 +1,13 @@
 import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class EditAnswerDto {
-  // surveyId
+  // survey_id
   @IsNumber()
   @IsOptional()
-  surveyId: number;
+  survey_id: number;
 
-  // answerContent
+  // answer_content
   @IsArray({ each: true })
   @IsOptional()
-  answerContent: { questionNumber: number; optionNumber: number[] }[];
+  answer_content: { question_number: number; option_number: number[] }[];
 }
