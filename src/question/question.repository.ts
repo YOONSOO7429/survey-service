@@ -111,14 +111,20 @@ export class QuestionRepository {
       const question = await this.questionRepository
         .createQueryBuilder('question')
         .leftJoinAndSelect('question.option', 'option')
+        .where('question.survey_id = :survey_id', { survey_id })
+        .groupBy('question.survey_id, question.question_id')
         .select([
           'question.survey_id AS survey_id',
           'question.question_id AS question_id',
           'question.question_number AS question_number',
           'question.question_content AS question_content',
           'question.duplicate_answer AS duplicate_answer',
+          'json_agg(json_build_object(' +
+            "'option_id', option.option_id, " +
+            "'option_number', option.option_number, " +
+            "'option_content', option.option_content" +
+            ')) AS option',
         ])
-        .where('question.survey_id = :survey_id', { survey_id })
         .getRawMany();
       return question;
     } catch (e) {

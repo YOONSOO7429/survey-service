@@ -1,4 +1,6 @@
-import { IsArray, IsNotEmpty, IsNumber } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsNumber, ValidateNested } from 'class-validator';
+import { AnswerContent } from '../entities/answerContent.entity';
 
 export class CreateAnswerDto {
   // survey_id
@@ -6,8 +8,8 @@ export class CreateAnswerDto {
   @IsNotEmpty()
   survey_id: number;
 
-  // answer_content
-  @IsArray({ each: true })
+  @ValidateNested({ each: true })
+  @Type(() => AnswerContent)
   @IsNotEmpty()
-  answer_content: { question_number: number; option_number: number[] }[];
+  answer_content: AnswerContent[];
 }

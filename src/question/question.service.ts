@@ -69,6 +69,7 @@ export class QuestionService {
   async findAllQuestion(surveyId: number): Promise<any> {
     try {
       const question = await this.questionRepository.findAllQuestion(surveyId);
+      return question;
     } catch (e) {
       console.error(e);
       throw new Error('QuestionService/findAllQuestion');

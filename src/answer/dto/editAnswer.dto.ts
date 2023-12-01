@@ -1,4 +1,12 @@
-import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNumber,
+  IsOptional,
+  IsString,
+  ValidateNested,
+} from 'class-validator';
+import { Type } from 'class-transformer';
+import { AnswerContent } from '../entities/answerContent.entity';
 
 export class EditAnswerDto {
   // survey_id
@@ -7,7 +15,8 @@ export class EditAnswerDto {
   survey_id: number;
 
   // answer_content
-  @IsArray({ each: true })
+  @ValidateNested({ each: true })
+  @Type(() => AnswerContent)
   @IsOptional()
-  answer_content: { question_number: number; option_number: number[] }[];
+  answer_content: AnswerContent[];
 }

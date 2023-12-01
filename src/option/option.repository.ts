@@ -37,10 +37,11 @@ export class OptionRepository {
   ): Promise<any> {
     try {
       const { option_content, option_number } = editOptionDto;
-      const editOption = await this.optionRepository.update(
-        { question_id },
-        { option_content, option_number },
-      );
+      const editOption = await this.optionRepository
+        .createQueryBuilder('option')
+        .update(Option)
+        .set({ option_content, option_number })
+        .where('question_id = :question_id', { question_id }).execute;
       return editOption;
     } catch (e) {
       console.error(e);
@@ -49,9 +50,14 @@ export class OptionRepository {
   }
 
   /* 선택지 삭제 */
-  async deleteOption(question_id: number): Promise<any> {
+  async deleteOption(option_id: number): Promise<any> {
     try {
-      const deleteOption = await this.optionRepository.delete({ question_id });
+      const deleteOption = await this.optionRepository
+        .createQueryBuilder('option')
+        .delete()
+        .from(Option)
+        .where('option_id = :option_id', { option_id })
+        .execute();
       return deleteOption;
     } catch (e) {
       console.error(e);

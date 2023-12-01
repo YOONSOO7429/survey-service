@@ -6,10 +6,11 @@ import { Answer } from './entities/answer.entity';
 import { AnswerRepository } from './answer.repository';
 import { SurveyModule } from 'src/survey/survey.module';
 import { QuestionModule } from 'src/question/question.module';
+import { AnswerContent } from './entities/answerContent.entity';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Answer]),
+    TypeOrmModule.forFeature([Answer, AnswerContent]),
     forwardRef(() => SurveyModule),
     forwardRef(() => QuestionModule),
   ],

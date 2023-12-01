@@ -113,7 +113,7 @@ export class OptionController {
       }
 
       // 선택지 삭제
-      const deleteOption = await this.optionService.deleteOption(question_id);
+      const deleteOption = await this.optionService.deleteOption(option_id);
       if (deleteOption.affected === 0) {
         return res
           .status(HttpStatus.INTERNAL_SERVER_ERROR)

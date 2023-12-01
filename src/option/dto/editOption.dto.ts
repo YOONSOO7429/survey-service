@@ -1,8 +1,8 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class EditOptionDto {
   // option_number
-  @IsString()
+  @IsNumber()
   @IsOptional()
   option_number: number;
 

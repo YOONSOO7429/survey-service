@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { AnswerContent } from './answerContent.entity';
 
 @Entity('answer')
 export class Answer {
@@ -18,8 +19,8 @@ export class Answer {
   @JoinColumn({ name: 'survey_id' })
   survey_id: number;
 
-  @Column({ type: 'json', array: true, nullable: true })
-  answer_content: { question_number: number; option_number: number[] }[];
+  @Column({ type: 'jsonb', nullable: true })
+  answer_content: AnswerContent[];
 
   @Column({ type: 'boolean', default: false })
   answer_is_done: boolean;
