@@ -10,12 +10,12 @@ export class QuestionService {
   /* 문항 생성 */
   async createQuestion(
     createQuestionDto: CreateQuestionDto,
-    surveyId: number,
+    survey_id: number,
   ): Promise<any> {
     try {
       const question = await this.questionRepository.createQuestion(
         createQuestionDto,
-        surveyId,
+        survey_id,
       );
       return question;
     } catch (e) {
@@ -27,12 +27,12 @@ export class QuestionService {
   /* 문항 수정 */
   async editQuestion(
     editQuestionDto: EditQuestionDto,
-    questionId: number,
+    question_id: number,
   ): Promise<any> {
     try {
       const editQuestion = await this.questionRepository.editQuestion(
         editQuestionDto,
-        questionId,
+        question_id,
       );
       return editQuestion;
     } catch (e) {
@@ -42,10 +42,10 @@ export class QuestionService {
   }
 
   /* 문항 삭제(softDelete) */
-  async deleteQuestion(questionId: number): Promise<any> {
+  async deleteQuestion(question_id: number): Promise<any> {
     try {
       const deleteQuestion =
-        await this.questionRepository.deleteQuestion(questionId);
+        await this.questionRepository.deleteQuestion(question_id);
       return deleteQuestion;
     } catch (e) {
       console.error(e);
@@ -54,10 +54,10 @@ export class QuestionService {
   }
 
   /* 문항 상세 조회 */
-  async findOneQuestion(questionId: number): Promise<any> {
+  async findOneQuestion(question_id: number): Promise<any> {
     try {
       const question =
-        await this.questionRepository.findOneQuestion(questionId);
+        await this.questionRepository.findOneQuestion(question_id);
       return question;
     } catch (e) {
       console.error(e);
@@ -66,9 +66,9 @@ export class QuestionService {
   }
 
   /* 문항 수 체크를 위한 조회 */
-  async findAllQuestion(surveyId: number): Promise<any> {
+  async findAllQuestion(survey_id: number): Promise<any> {
     try {
-      const question = await this.questionRepository.findAllQuestion(surveyId);
+      const question = await this.questionRepository.findAllQuestion(survey_id);
       return question;
     } catch (e) {
       console.error(e);
@@ -77,10 +77,10 @@ export class QuestionService {
   }
 
   /* 설문지에 맞는 문항 조회 */
-  async findAllQuestionWithOptions(surveyId: number): Promise<any> {
+  async findAllQuestionWithOptions(survey_id: number): Promise<any> {
     try {
       const question =
-        await this.questionRepository.findAllQuestionWithOptions(surveyId);
+        await this.questionRepository.findAllQuestionWithOptions(survey_id);
       return question;
     } catch (e) {
       console.error(e);

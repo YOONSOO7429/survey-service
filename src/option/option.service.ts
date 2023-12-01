@@ -10,12 +10,12 @@ export class OptionService {
   /* 선택지 생성 */
   async createOption(
     createOptionDto: CreateOptionDto,
-    questionId: number,
+    question_id: number,
   ): Promise<any> {
     try {
       const option = await this.optionRepository.createOption(
         createOptionDto,
-        questionId,
+        question_id,
       );
       return option;
     } catch (e) {
@@ -27,12 +27,12 @@ export class OptionService {
   /* 선택지 수정 */
   async editOption(
     editOptionDto: EditOptionDto,
-    optionId: number,
+    option_id: number,
   ): Promise<any> {
     try {
       const editOption = await this.optionRepository.editOption(
         editOptionDto,
-        optionId,
+        option_id,
       );
       return editOption;
     } catch (e) {
@@ -42,9 +42,9 @@ export class OptionService {
   }
 
   /* 선택지 삭제 */
-  async deleteOption(optionId: number): Promise<any> {
+  async deleteOption(option_id: number): Promise<any> {
     try {
-      const deleteOption = await this.optionRepository.deleteOption(optionId);
+      const deleteOption = await this.optionRepository.deleteOption(option_id);
       return deleteOption;
     } catch (e) {
       console.error(e);
@@ -53,9 +53,9 @@ export class OptionService {
   }
 
   /* 선택지 상세 조회 */
-  async findOneOption(optionId: number): Promise<any> {
+  async findOneOption(question_id: number): Promise<any> {
     try {
-      const option = await this.optionRepository.findOneOption(optionId);
+      const option = await this.optionRepository.findOneOption(question_id);
       return option;
     } catch (e) {
       console.error(e);
@@ -64,9 +64,9 @@ export class OptionService {
   }
 
   /* 선택지 전체 조회 */
-  async findAllOption(questionId: number): Promise<any> {
+  async findAllOption(question_id: number): Promise<any> {
     try {
-      const option = await this.optionRepository.findAllOption(questionId);
+      const option = await this.optionRepository.findAllOption(question_id);
       return option;
     } catch (e) {
       console.error(e);

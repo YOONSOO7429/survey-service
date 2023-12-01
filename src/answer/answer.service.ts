@@ -21,12 +21,12 @@ export class AnswerService {
   /* 답변 수정 */
   async editAnswer(
     editAnswerDto: EditAnswerDto,
-    answerId: number,
+    answer_id: number,
   ): Promise<any> {
     try {
       const editAnswer = await this.answerRepository.editAnswer(
         editAnswerDto,
-        answerId,
+        answer_id,
       );
       return editAnswer;
     } catch (e) {
@@ -36,9 +36,9 @@ export class AnswerService {
   }
 
   /* 답변 삭제 */
-  async deleteAnswer(answerId: number): Promise<any> {
+  async deleteAnswer(answer_id: number): Promise<any> {
     try {
-      const deleteAnswer = await this.answerRepository.deleteAnswer(answerId);
+      const deleteAnswer = await this.answerRepository.deleteAnswer(answer_id);
       return deleteAnswer;
     } catch (e) {
       console.error(e);
@@ -47,9 +47,9 @@ export class AnswerService {
   }
 
   /* 제출한 답변 조회 */
-  async findOneAnswer(answerId: number): Promise<any> {
+  async findOneAnswer(answer_id: number): Promise<any> {
     try {
-      const answer = await this.answerRepository.findOneAnswer(answerId);
+      const answer = await this.answerRepository.findOneAnswer(answer_id);
       return answer;
     } catch (e) {
       console.error(e);
@@ -58,9 +58,9 @@ export class AnswerService {
   }
 
   /* 답변 전체 조회 */
-  async findAllAnswer(surveyId: number): Promise<any> {
+  async findAllAnswer(survey_id: number): Promise<any> {
     try {
-      const answer = await this.answerRepository.findAllAnswer(surveyId);
+      const answer = await this.answerRepository.findAllAnswer(survey_id);
       return answer;
     } catch (e) {
       console.error(e);

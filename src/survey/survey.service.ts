@@ -21,12 +21,12 @@ export class SurveyService {
   /* 설문지 수정 */
   async editSurvey(
     editSurveyDto: EditSurveyDto,
-    surveyId: number,
+    survey_id: number,
   ): Promise<any> {
     try {
       const editSurvey = await this.surveyRepository.editSurvey(
         editSurveyDto,
-        surveyId,
+        survey_id,
       );
       return editSurvey;
     } catch (e) {
@@ -36,9 +36,9 @@ export class SurveyService {
   }
 
   /* 설문지 삭제 */
-  async deleteSurvey(surveyId: number): Promise<any> {
+  async deleteSurvey(survey_id: number): Promise<any> {
     try {
-      const deleteSurvey = await this.surveyRepository.deleteSurvey(surveyId);
+      const deleteSurvey = await this.surveyRepository.deleteSurvey(survey_id);
       return deleteSurvey;
     } catch (e) {
       console.error(e);
@@ -47,9 +47,9 @@ export class SurveyService {
   }
 
   /* 설문지 상세 조회 */
-  async findOneSurvey(surveyId: number): Promise<any> {
+  async findOneSurvey(survey_id: number): Promise<any> {
     try {
-      const survey = await this.surveyRepository.findOneSurvey(surveyId);
+      const survey = await this.surveyRepository.findOneSurvey(survey_id);
       return survey;
     } catch (e) {
       console.error(e);
@@ -58,9 +58,9 @@ export class SurveyService {
   }
 
   /* 설문지 완료 */
-  async surveyIsDone(surveyId: number): Promise<any> {
+  async surveyIsDone(survey_id: number): Promise<any> {
     try {
-      const surveyIsDone = await this.surveyRepository.surveyIsDone(surveyId);
+      const surveyIsDone = await this.surveyRepository.surveyIsDone(survey_id);
       return surveyIsDone;
     } catch (e) {
       console.error(e);

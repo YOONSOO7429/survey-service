@@ -37,6 +37,16 @@ export class OptionController {
           .json({ message: '존재하지 않는 문항입니다.' });
       }
 
+      // 선택지 전체 조회
+      const options = await this.optionService.findAllOption(question_id);
+      for (let i = 0; i < options.length; i++) {
+        if (options[i].option_number === createOptionDto.option_number) {
+          return res
+            .status(HttpStatus.BAD_REQUEST)
+            .json({ message: '이미 선택지 번호가 존재합니다.' });
+        }
+      }
+
       // 선택지 생성
       await this.optionService.createOption(createOptionDto, question_id);
       return res.status(HttpStatus.OK).json({ message: '선택지 생성 완료' });
@@ -69,6 +79,16 @@ export class OptionController {
         return res
           .status(HttpStatus.NOT_FOUND)
           .json({ message: '존재하지 않는 선택지입니다.' });
+      }
+
+      // 선택지 전체 조회
+      const options = await this.optionService.findAllOption(question_id);
+      for (let i = 0; i < options.length; i++) {
+        if (options[i].option_number === editOptionDto.option_number) {
+          return res
+            .status(HttpStatus.BAD_REQUEST)
+            .json({ message: '이미 선택지 번호가 존재합니다.' });
+        }
       }
 
       // 선택지 수정
