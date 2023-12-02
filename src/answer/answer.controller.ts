@@ -147,8 +147,7 @@ export class AnswerController {
           answer_content[i].option_number.length !== 1
         ) {
           return res.status(HttpStatus.BAD_REQUEST).json({
-            message:
-              '답변이 중복되지 않도록 올바른 option_number를 선택해주세요.',
+            message: `${currentQuestion.question_number}번 문항은 단일 답변만 허용됩니다.`,
           });
         }
       }
