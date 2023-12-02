@@ -8,6 +8,6 @@ export class AnswerContent {
   @Column({ type: 'bigint' })
   question_number: number;
 
-  @Column({ type: 'varchar' })
-  option_number: string;
+  @Column({ type: 'jsonb', nullable: true })
+  option_number: number[];
 }
