@@ -40,7 +40,8 @@ export class AnswerController {
       }
 
       // 문항 조회
-      const question = await this.questionService.findAllQuestion(survey_id);
+      const question =
+        await this.questionService.findAllQuestionWithOptions(survey_id);
 
       // 답변 확인
       const answer_content = createAnswerDto.answer_content;
@@ -64,14 +65,26 @@ export class AnswerController {
             .json({ message: '잘못된 답변 방법입니다.' });
         }
 
+        // 선택지 번호 검사
+        if (
+          currentQuestion &&
+          currentQuestion.option.some((opt) =>
+            answer_content[i].option_number.includes(opt.option_number),
+          )
+        ) {
+          return res.status(HttpStatus.BAD_REQUEST).json({
+            message: `${currentQuestion.question_number}번 문항의 선택 번호가 올바르지 않습니다.`,
+          });
+        }
+
+        // 선택지 중복 문항 검사
         if (
           currentQuestion &&
           currentQuestion.duplicate_answer === false &&
           answer_content[i].option_number.length !== 1
         ) {
           return res.status(HttpStatus.BAD_REQUEST).json({
-            message:
-              '답변이 중복되지 않도록 올바른 option_number를 선택해주세요.',
+            message: `${currentQuestion.question_number}번 문항은 단일 답변만 허용됩니다.`,
           });
         }
       }
@@ -115,6 +128,19 @@ export class AnswerController {
             .json({ message: '잘못된 답변 방법입니다.' });
         }
 
+        // 선택지 번호 검사
+        if (
+          currentQuestion &&
+          currentQuestion.option.some((opt) =>
+            answer_content[i].option_number.includes(opt.option_number),
+          )
+        ) {
+          return res.status(HttpStatus.BAD_REQUEST).json({
+            message: `${currentQuestion.question_number}번 문항의 선택 번호가 올바르지 않습니다.`,
+          });
+        }
+
+        // 선택지 중복 문항 검사
         if (
           currentQuestion &&
           currentQuestion.duplicate_answer === false &&
