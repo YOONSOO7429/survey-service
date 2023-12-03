@@ -26,6 +26,12 @@
 2. env파일에 DB 정보 입력
 3. app.module.ts파일에 synchronize 부분은 true일 경우 db를 최신 구성으로 동기화, false일 경우 마지막 동기화 상태로 유지.
 
+- Winston Logger 설정
+
+1. log가 저장 될 수 있는 폴더 생성
+2. 폴더의 경로를 env에 입력
+3. app.module.ts에 WinstonModule log 레벨을 설정
+
 - 서버 실행 전 터미널에서 npm install로 서버 setting
 
 ### 서버 실행 방법
