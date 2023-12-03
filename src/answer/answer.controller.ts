@@ -8,6 +8,7 @@ import {
   Param,
   Delete,
   Get,
+  Logger,
 } from '@nestjs/common';
 import { AnswerService } from './answer.service';
 import { CreateAnswerDto } from './dto/createAnswer.dto';
@@ -21,6 +22,7 @@ export class AnswerController {
     private readonly answerService: AnswerService,
     private readonly surveyService: SurveyService,
     private readonly questionService: QuestionService,
+    private readonly logger: Logger,
   ) {}
 
   /* 답변 생성 */
@@ -34,6 +36,7 @@ export class AnswerController {
       // 설문지 조회
       const survey = await this.surveyService.findOneSurvey(survey_id);
       if (!survey) {
+        this.logger.error('존재하지 않는 설문지입니다.');
         return res
           .status(HttpStatus.NOT_FOUND)
           .json({ message: '존재하지 않는 설문지입니다.' });
@@ -46,9 +49,10 @@ export class AnswerController {
       // 답변 확인
       const answer_content = createAnswerDto.answer_content;
       if (answer_content.length !== question.length) {
+        this.logger.error('답변을 모두 작성해주세요');
         return res
           .status(HttpStatus.BAD_REQUEST)
-          .json({ message: '답변을 모두 작성해주세요' });
+          .json({ message: '답변을 모두 작성해주세요.' });
       }
 
       // 중복 답변, 형태 검사
@@ -60,6 +64,7 @@ export class AnswerController {
 
         // 검사 시작
         if (!Array.isArray(answer_content[i].option_number)) {
+          this.logger.error('잘못된 답변 방법입니다.');
           return res
             .status(HttpStatus.BAD_REQUEST)
             .json({ message: '잘못된 답변 방법입니다.' });
@@ -72,6 +77,9 @@ export class AnswerController {
             answer_content[i].option_number.includes(opt.option_number),
           )
         ) {
+          this.logger.error(
+            `${currentQuestion.question_number}번 문항의 선택 번호가 올바르지 않습니다.`,
+          );
           return res.status(HttpStatus.BAD_REQUEST).json({
             message: `${currentQuestion.question_number}번 문항의 선택 번호가 올바르지 않습니다.`,
           });
@@ -83,16 +91,25 @@ export class AnswerController {
           currentQuestion.duplicate_answer === false &&
           answer_content[i].option_number.length !== 1
         ) {
+          this.logger.error(
+            `${currentQuestion.question_number}번 문항은 단일 답변만 허용됩니다.`,
+          );
           return res.status(HttpStatus.BAD_REQUEST).json({
             message: `${currentQuestion.question_number}번 문항은 단일 답변만 허용됩니다.`,
           });
         }
       }
       await this.answerService.createAnswer(createAnswerDto);
+      this.logger.log('답변 완료');
       return res.status(HttpStatus.OK).json({ message: '답변 완료' });
     } catch (e) {
-      console.error(e);
-      throw new Error('AnswerController/createAnswer');
+      this.logger.error(
+        `답변 생성 중에 오류가 발생했습니다. Error: ${e.message}`,
+      );
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '답변 생성 중에 오류가 발생했습니다.',
+        error: e.message,
+      });
     }
   }
 
@@ -109,6 +126,7 @@ export class AnswerController {
       // 문항 조회
       const question = await this.questionService.findAllQuestion(survey_id);
       if (answer_content.length !== question.length) {
+        this.logger.error('답변을 모두 작성해주세요');
         return res
           .status(HttpStatus.BAD_REQUEST)
           .json({ message: '답변을 모두 작성해주세요' });
@@ -123,6 +141,7 @@ export class AnswerController {
 
         // 검사 시작
         if (!Array.isArray(answer_content[i].option_number)) {
+          this.logger.error('잘못된 답변 방법입니다.');
           return res
             .status(HttpStatus.BAD_REQUEST)
             .json({ message: '잘못된 답변 방법입니다.' });
@@ -135,6 +154,9 @@ export class AnswerController {
             answer_content[i].option_number.includes(opt.option_number),
           )
         ) {
+          this.logger.error(
+            `${currentQuestion.question_number}번 문항의 선택 번호가 올바르지 않습니다.`,
+          );
           return res.status(HttpStatus.BAD_REQUEST).json({
             message: `${currentQuestion.question_number}번 문항의 선택 번호가 올바르지 않습니다.`,
           });
@@ -146,16 +168,34 @@ export class AnswerController {
           currentQuestion.duplicate_answer === false &&
           answer_content[i].option_number.length !== 1
         ) {
+          this.logger.error(
+            `${currentQuestion.question_number}번 문항은 단일 답변만 허용됩니다.`,
+          );
           return res.status(HttpStatus.BAD_REQUEST).json({
             message: `${currentQuestion.question_number}번 문항은 단일 답변만 허용됩니다.`,
           });
         }
       }
-      await this.answerService.editAnswer(editAnswerDto, answer_id);
+      const editAnswer = await this.answerService.editAnswer(
+        editAnswerDto,
+        answer_id,
+      );
+      if (editAnswer.affected === 0) {
+        this.logger.error('답변 수정에 실패했습니다.');
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json({ message: '답변 수정에 실패했습니다.' });
+      }
+      this.logger.log('답변 수정 완료');
       return res.status(HttpStatus.OK).json({ message: '답변 수정 완료' });
     } catch (e) {
-      console.error(e);
-      throw new Error('AnswerController/editAnswer');
+      this.logger.error(
+        `답변 수정 중에 오류가 발생했습니다. Error: ${e.message}`,
+      );
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '답변 수정 중에 오류가 발생했습니다.',
+        error: e.message,
+      });
     }
   }
 
@@ -169,16 +209,29 @@ export class AnswerController {
       // 답변 조회
       const answer = await this.answerService.findOneAnswer(answer_id);
       if (!answer) {
+        this.logger.error('존재하지 않는 답변입니다.');
         return res
           .status(HttpStatus.NOT_FOUND)
           .json({ message: '존재하지 않는 답변입니다.' });
       } else {
-        await this.answerService.deleteAnswer(answer_id);
+        const deleteAnswer = await this.answerService.deleteAnswer(answer_id);
+        if (deleteAnswer.affected === 0) {
+          this.logger.error('답변 삭제에 실패했습니다.');
+          return res
+            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+            .json({ message: '답변 삭제에 실패했습니다.' });
+        }
+        this.logger.log('답변 삭제 완료');
         return res.status(HttpStatus.OK).json({ message: '답변 삭제 완료' });
       }
     } catch (e) {
-      console.error(e);
-      throw new Error('AnswerController/deleteAnswer');
+      this.logger.error(
+        `답변 삭제 중에 오류가 발생했습니다. Error: ${e.message}`,
+      );
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '답변 삭제 중에 오류가 발생했습니다.',
+        error: e.message,
+      });
     }
   }
 
@@ -191,10 +244,16 @@ export class AnswerController {
     try {
       // 답변 전체 조회
       const answer = await this.answerService.findAllAnswer(survey_id);
+      this.logger.log('답변 전체 조회 완료');
       return res.status(HttpStatus.OK).json(answer);
     } catch (e) {
-      console.error(e);
-      throw new Error('AnswerController/getAnswer');
+      this.logger.error(
+        `답변 전체 조회 중에 오류가 발생했습니다. Error: ${e.message}`,
+      );
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '답변 전체 조회 중에 오류가 발생했습니다.',
+        error: e.message,
+      });
     }
   }
 }

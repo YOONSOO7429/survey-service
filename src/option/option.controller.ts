@@ -8,6 +8,7 @@ import {
   Put,
   Delete,
   Get,
+  Logger,
 } from '@nestjs/common';
 import { OptionService } from './option.service';
 import { CreateOptionDto } from './dto/createOption.dto';
@@ -19,6 +20,7 @@ export class OptionController {
   constructor(
     private readonly optionService: OptionService,
     private readonly questionService: QuestionService,
+    private readonly logger: Logger,
   ) {}
 
   /* 선택지 생성 */
@@ -32,6 +34,7 @@ export class OptionController {
       // 문항 조회
       const question = await this.questionService.findOneQuestion(question_id);
       if (!question) {
+        this.logger.error('존재하지 않는 문항입니다.');
         return res
           .status(HttpStatus.NOT_FOUND)
           .json({ message: '존재하지 않는 문항입니다.' });
@@ -41,6 +44,7 @@ export class OptionController {
       const options = await this.optionService.findAllOption(question_id);
       for (let i = 0; i < options.length; i++) {
         if (options[i].option_number === createOptionDto.option_number) {
+          this.logger.error('이미 선택지 번호가 존재합니다.');
           return res
             .status(HttpStatus.BAD_REQUEST)
             .json({ message: '이미 선택지 번호가 존재합니다.' });
@@ -49,10 +53,16 @@ export class OptionController {
 
       // 선택지 생성
       await this.optionService.createOption(createOptionDto, question_id);
+      this.logger.log('선택지 생성 완료');
       return res.status(HttpStatus.OK).json({ message: '선택지 생성 완료' });
     } catch (e) {
-      console.error(e);
-      throw new Error('OptionController/createOption');
+      this.logger.error(
+        `선택지 생성 중에 오류가 발생했습니다. Error: ${e.message}`,
+      );
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '선택지 생성 중에 오류가 발생했습니다.',
+        error: e.message,
+      });
     }
   }
 
@@ -68,6 +78,7 @@ export class OptionController {
       // 문항 조회
       const question = await this.questionService.findOneQuestion(question_id);
       if (!question) {
+        this.logger.error('존재하지 않는 문항입니다.');
         return res
           .status(HttpStatus.NOT_FOUND)
           .json({ message: '존재하지 않는 문항입니다.' });
@@ -76,6 +87,7 @@ export class OptionController {
       // 선택지 조회
       const option = await this.optionService.findOneOption(option_id);
       if (!option) {
+        this.logger.error('존재하지 않는 선택지입니다.');
         return res
           .status(HttpStatus.NOT_FOUND)
           .json({ message: '존재하지 않는 선택지입니다.' });
@@ -85,6 +97,7 @@ export class OptionController {
       const options = await this.optionService.findAllOption(question_id);
       for (let i = 0; i < options.length; i++) {
         if (options[i].option_number === editOptionDto.option_number) {
+          this.logger.error('이미 선택지 번호가 존재합니다.');
           return res
             .status(HttpStatus.BAD_REQUEST)
             .json({ message: '이미 선택지 번호가 존재합니다.' });
@@ -97,14 +110,22 @@ export class OptionController {
         option_id,
       );
       if (editOption.affected === 0) {
+        this.logger.error('선택지 수정에 실패했습니다.');
         return res
           .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .json({ message: '내부 서버 에러' });
+          .json({ message: '선택지 수정에 실패했습니다.' });
       }
+
+      this.logger.log('선택지 수정 완료');
       return res.status(HttpStatus.OK).json({ message: '선택지 수정 완료' });
     } catch (e) {
-      console.error(e);
-      throw new Error('OptionController/editOption');
+      this.logger.error(
+        `선택지 수정 중에 오류가 발생했습니다. Error: ${e.message}`,
+      );
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '선택지 수정 중에 오류가 발생했습니다.',
+        error: e.message,
+      });
     }
   }
 
@@ -119,6 +140,7 @@ export class OptionController {
       // 문항 조회
       const question = await this.questionService.findOneQuestion(question_id);
       if (!question) {
+        this.logger.error('존재하지 않는 문항입니다.');
         return res
           .status(HttpStatus.NOT_FOUND)
           .json({ message: '존재하지 않는 문항입니다.' });
@@ -127,6 +149,7 @@ export class OptionController {
       // 선택지 조회
       const option = await this.optionService.findOneOption(option_id);
       if (!option) {
+        this.logger.error('존재하지 않는 선택지입니다.');
         return res
           .status(HttpStatus.NOT_FOUND)
           .json({ message: '존재하지 않는 선택지입니다.' });
@@ -135,14 +158,21 @@ export class OptionController {
       // 선택지 삭제
       const deleteOption = await this.optionService.deleteOption(option_id);
       if (deleteOption.affected === 0) {
+        this.logger.error('선택지 삭제에 실패했습니다.');
         return res
           .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .json({ message: '내부 서버 에러' });
+          .json({ message: '설문지 삭제에 실패했습니다.' });
       }
+      this.logger.log('선택지 삭제 완료');
       return res.status(HttpStatus.OK).json({ message: '선택지 삭제 완료' });
     } catch (e) {
-      console.error(e);
-      throw new Error('OptionController/deleteOption');
+      this.logger.error(
+        `선택지 삭제 중에 오류가 발생했습니다. Error: ${e.message}`,
+      );
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '선택지 삭제 중에 오류가 발생했습니다.',
+        error: e.message,
+      });
     }
   }
 
@@ -156,6 +186,7 @@ export class OptionController {
       // 문항 조회
       const question = await this.questionService.findOneQuestion(question_id);
       if (!question) {
+        this.logger.error('존재하지 않는 문항입니다.');
         return res
           .status(HttpStatus.NOT_FOUND)
           .json({ message: '존재하지 않는 문항입니다.' });
@@ -163,10 +194,16 @@ export class OptionController {
 
       // 선택지 조회
       const option = await this.optionService.findAllOption(question_id);
+      this.logger.log('선택지 조회 완료');
       return res.status(HttpStatus.OK).json(option);
     } catch (e) {
-      console.error(e);
-      throw new Error('OptionController/getAllQuestion');
+      this.logger.error(
+        `선택지 조회 중에 오류가 발생했습니다. Error: ${e.message}`,
+      );
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '선택지 조회 중에 오류가 발생했습니다.',
+        error: e.message,
+      });
     }
   }
 }

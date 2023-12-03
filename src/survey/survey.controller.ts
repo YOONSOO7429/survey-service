@@ -8,19 +8,19 @@ import {
   Param,
   Delete,
   Get,
+  Logger,
 } from '@nestjs/common';
 import { SurveyService } from './survey.service';
 import { CreateSurveyDto } from './dto/createSurvey.dto';
 import { EditSurveyDto } from './dto/editSurvey.dto';
 import { QuestionService } from 'src/question/question.service';
-import { OptionService } from 'src/option/option.service';
 
 @Controller('survey')
 export class SurveyController {
   constructor(
     private readonly surveyService: SurveyService,
     private readonly questionService: QuestionService,
-    private readonly optionService: OptionService,
+    private readonly logger: Logger,
   ) {}
 
   /* 설문지 생성 */
@@ -31,11 +31,23 @@ export class SurveyController {
   ): Promise<any> {
     try {
       // 설문지 생성
-      await this.surveyService.createSurvey(createSurveyDto);
+      const survey = await this.surveyService.createSurvey(createSurveyDto);
+      if (!survey) {
+        this.logger.error('설문지 생성에 실패했습니다.');
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json({ message: '설문지 생성에 실패했습니다.' });
+      }
+      this.logger.log('설문지 생성 완료');
       return res.status(HttpStatus.OK).json({ message: '설문지 생성 완료' });
     } catch (e) {
-      console.error(e);
-      throw new Error('SurveyController/createSurvey');
+      this.logger.error(
+        `설문지 생성 중에 오류가 발생했습니다. Error: ${e.message}`,
+      );
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '설문지 생성 중에 오류가 발생했습니다.',
+        error: e.message,
+      });
     }
   }
 
@@ -50,6 +62,7 @@ export class SurveyController {
       // 설문지 조회
       const survey = await this.surveyService.findOneSurvey(survey_id);
       if (!survey) {
+        this.logger.warn('설문지가 존재하지 않습니다.');
         return res
           .status(HttpStatus.NOT_FOUND)
           .json({ message: '설문지가 존재하지 않습니다.' });
@@ -61,14 +74,21 @@ export class SurveyController {
         survey_id,
       );
       if (editSurvey.affected === 0) {
+        this.logger.error('설문지 수정에 실패했습니다.');
         return res
           .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .json({ message: '내부 서버 에러' });
+          .json({ message: '설문지 수정에 실패했습니다.' });
       }
+      this.logger.log('설문지 수정 완료');
       return res.status(HttpStatus.OK).json({ message: '설문지 수정 완료' });
     } catch (e) {
-      console.error(e);
-      throw new Error('SurveyController/editSurvey');
+      this.logger.error(
+        `설문지 수정 중에 오류가 발생했습니다. Error: ${e.message}`,
+      );
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '설문지 수정 중에 오류가 발생했습니다.',
+        error: e.message,
+      });
     }
   }
 
@@ -82,6 +102,7 @@ export class SurveyController {
       // 설문지 조회
       const survey = await this.surveyService.findOneSurvey(survey_id);
       if (!survey) {
+        this.logger.warn('설문지가 존재하지 않습니다.');
         return res
           .status(HttpStatus.NOT_FOUND)
           .json({ message: '설문지가 존재하지 않습니다.' });
@@ -90,15 +111,22 @@ export class SurveyController {
       // 설문지 삭제
       const deleteSurvey = await this.surveyService.deleteSurvey(survey_id);
       if (deleteSurvey.affected === 0) {
+        this.logger.error('설문지 삭제에 실패했습니다.');
         return res
           .status(HttpStatus.INTERNAL_SERVER_ERROR)
-          .json({ message: '내부 서버 에러' });
+          .json({ message: '설문지 삭제에 실패했습니다.' });
       }
 
+      this.logger.log('설문지 삭제 완료');
       return res.status(HttpStatus.OK).json({ message: '설문지 삭제 완료' });
     } catch (e) {
-      console.error(e);
-      throw new Error('SurveyController/deleteSurvey');
+      this.logger.error(
+        `설문지 삭제 중에 오류가 발생했습니다. Error: ${e.message}`,
+      );
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '설문지 삭제 중에 오류가 발생했습니다.',
+        error: e.message,
+      });
     }
   }
 
@@ -112,6 +140,7 @@ export class SurveyController {
       // 설문지 조회
       const survey = await this.surveyService.findOneSurvey(survey_id);
       if (!survey) {
+        this.logger.warn('존재하지 않는 설문지입니다.');
         return res
           .status(HttpStatus.NOT_FOUND)
           .json({ message: '존재하지 않는 설문지입니다.' });
@@ -121,10 +150,16 @@ export class SurveyController {
       const question =
         await this.questionService.findAllQuestionWithOptions(survey_id);
 
+      this.logger.log('설문지 상세 조회 완료');
       return res.status(HttpStatus.OK).json({ survey, question });
     } catch (e) {
-      console.error(e);
-      throw new Error('SurveyController/getSurveyDetail');
+      this.logger.error(
+        `설문지 조회 중에 오류가 발생했습니다. Error: ${e.message}`,
+      );
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '설문지 조회 중에 오류가 발생했습니다.',
+        error: e.message,
+      });
     }
   }
 
@@ -138,15 +173,29 @@ export class SurveyController {
       // 설문지 조회
       const survey = await this.surveyService.findOneSurvey(survey_id);
       if (!survey) {
+        this.logger.warn('존재하지 않는 설문지입니다.');
         return res
           .status(HttpStatus.NOT_FOUND)
           .json({ message: '존재하지 않는 설문지입니다.' });
       }
-      await this.surveyService.surveyIsDone(survey_id);
+      const editSurvey = await this.surveyService.surveyIsDone(survey_id);
+      if (editSurvey.affected === 0) {
+        this.logger.error('설문지 완료에 실패했습니다.');
+        return res
+          .status(HttpStatus.INTERNAL_SERVER_ERROR)
+          .json({ message: '설문지 완료에 실패했습니다.' });
+      }
+
+      this.logger.log('설문지 완료');
       return res.status(HttpStatus.OK).json({ message: '설문지 완료' });
     } catch (e) {
-      console.error(e);
-      throw new Error('SurveyController/surveyIsDone');
+      this.logger.error(
+        `설문지 완료 중에 오류가 발생했습니다. Error: ${e.message}`,
+      );
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '설문지 완료 중에 오류가 발생했습니다.',
+        error: e.message,
+      });
     }
   }
 
@@ -158,8 +207,13 @@ export class SurveyController {
       const survey_is_done = await this.surveyService.findAllSurveyIsDone();
       return res.status(HttpStatus.OK).json(survey_is_done);
     } catch (e) {
-      console.error(e);
-      throw new Error('SurveyController/getSurveyIsDone');
+      this.logger.error(
+        `완료한 설문지 확인 중에 오류가 발생했습니다. Error: ${e.message}`,
+      );
+      return res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({
+        message: '완료한 설문지 확인 중에 오류가 발생했습니다.',
+        error: e.message,
+      });
     }
   }
 }
