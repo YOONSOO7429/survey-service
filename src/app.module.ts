@@ -23,6 +23,7 @@ import * as winston from 'winston';
           level: 'info', // error: 0, warn: 1, info: 2, http: 3, verbose: 4, debug: 5, silly: 6
           format: winston.format.combine(
             winston.format.timestamp(),
+            winston.format.json(),
             utilities.format.nestLike('Survey-service', { prettyPrint: true }),
           ),
           filename: process.env.WINSTON_LOG_FILENAME,

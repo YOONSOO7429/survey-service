@@ -8,19 +8,22 @@ import {
   Param,
   Delete,
   Get,
-  Logger,
+  LoggerService,
+  Inject,
 } from '@nestjs/common';
 import { SurveyService } from './survey.service';
 import { CreateSurveyDto } from './dto/createSurvey.dto';
 import { EditSurveyDto } from './dto/editSurvey.dto';
 import { QuestionService } from 'src/question/question.service';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Controller('survey')
 export class SurveyController {
   constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
     private readonly surveyService: SurveyService,
     private readonly questionService: QuestionService,
-    private readonly logger: Logger,
   ) {}
 
   /* 설문지 생성 */

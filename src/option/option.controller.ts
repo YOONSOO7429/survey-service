@@ -8,19 +8,22 @@ import {
   Put,
   Delete,
   Get,
-  Logger,
+  LoggerService,
+  Inject,
 } from '@nestjs/common';
 import { OptionService } from './option.service';
 import { CreateOptionDto } from './dto/createOption.dto';
 import { QuestionService } from 'src/question/question.service';
 import { EditOptionDto } from './dto/editOption.dto';
+import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 
 @Controller('option')
 export class OptionController {
   constructor(
+    @Inject(WINSTON_MODULE_NEST_PROVIDER)
+    private readonly logger: LoggerService,
     private readonly optionService: OptionService,
     private readonly questionService: QuestionService,
-    private readonly logger: Logger,
   ) {}
 
   /* 선택지 생성 */
